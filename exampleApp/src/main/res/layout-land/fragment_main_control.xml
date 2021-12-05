@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    tools:layout_editor_absoluteY="81dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/protocolSpinner">
+
+        <Button
+            android:id="@+id/forwardButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:text="Up/Forward"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/rightButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:text="Right"
+            app:layout_constraintBaseline_toBaselineOf="@+id/centerButton"
+            app:layout_constraintStart_toEndOf="@+id/centerButton" />
+
+        <Button
+            android:id="@+id/centerButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:text="Center"
+            app:layout_constraintEnd_toEndOf="@+id/forwardButton"
+            app:layout_constraintStart_toStartOf="@+id/forwardButton"
+            app:layout_constraintTop_toBottomOf="@+id/forwardButton" />
+
+        <Button
+            android:id="@+id/leftButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:text="Left"
+            app:layout_constraintBaseline_toBaselineOf="@+id/centerButton"
+            app:layout_constraintEnd_toStartOf="@+id/centerButton" />
+
+        <Button
+            android:id="@+id/backwardButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:text="Down/Backward"
+            app:layout_constraintEnd_toEndOf="@+id/centerButton"
+            app:layout_constraintStart_toStartOf="@+id/centerButton"
+            app:layout_constraintTop_toBottomOf="@+id/centerButton" />
+
+        <Button
+            android:id="@+id/portraitButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:text="portrait"
+            app:layout_constraintEnd_toEndOf="@+id/backwardButton"
+            app:layout_constraintStart_toStartOf="@+id/backwardButton"
+            app:layout_constraintTop_toBottomOf="@+id/backwardButton" />
+
+        <Button
+            android:id="@+id/landscapeLeftButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:text="landscape left"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/portraitButton"
+            app:layout_constraintEnd_toStartOf="@+id/portraitButton"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/landscapeRightButton"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/button_height"
+            android:text="Landscape right"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/portraitButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/portraitButton" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.makerlab.example.widgets.ProtocolSelectSpinner
+        android:id="@+id/protocolSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/labelTextView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/labelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Protocol: "
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/protocolSpinner"
+        app:layout_constraintEnd_toStartOf="@+id/protocolSpinner"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

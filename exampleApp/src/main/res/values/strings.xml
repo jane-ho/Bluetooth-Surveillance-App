@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Example App To Use BlueTooth</string>
+    <string-array name="protocol_select_spinner">
+        <item>Simply Text</item>
+        <item>GoBLE</item>
+        <item>Vorpal</item>
+        <item>Robot Arm G-Code</item>
+        <item>DrawBot G-Code</item>
+    </string-array>
+</resources>
