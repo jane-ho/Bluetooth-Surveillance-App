@@ -57,13 +57,13 @@ public class BluetoothDevRecyclerView {
             }
             deviceViewHolder.deviceCount.setText(String.valueOf(position + 1));
             int colorId;
-            if (position % 2==0) {
-                colorId = deviceViewHolder.container.getResources().getColor(R.color.colorGray);
-                deviceViewHolder.container.setBackground(new ColorDrawable(colorId));
-            } else {
-                colorId = deviceViewHolder.container.getResources().getColor(R.color.colorGrayLighter);
-                deviceViewHolder.container.setBackground(new ColorDrawable(colorId));
-            }
+//            if (position % 2==0) {
+//                colorId = deviceViewHolder.container.getResources().getColor(R.color.colorGray);
+//                deviceViewHolder.container.setBackground(new ColorDrawable(colorId));
+//            } else {
+//                colorId = deviceViewHolder.container.getResources().getColor(R.color.colorGrayLighter);
+//                deviceViewHolder.container.setBackground(new ColorDrawable(colorId));
+//            }
             if (activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 deviceViewHolder.deviceCount.setVisibility(View.GONE);
                 deviceViewHolder.deviceType.setVisibility(View.GONE);

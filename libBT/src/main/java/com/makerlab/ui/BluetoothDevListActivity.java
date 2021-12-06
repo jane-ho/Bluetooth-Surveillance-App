@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ public class BluetoothDevListActivity extends AppCompatActivity
     private Button mButtonScan;
     private BluetoothScan mbluetoothScan;
     private BluetoothDevice selectedDevice;
+    private ProgressBar progressBar;
 
 
     @Override
@@ -48,6 +50,8 @@ public class BluetoothDevListActivity extends AppCompatActivity
         mbluetoothScan = new BluetoothScan(this);
         mbluetoothScan.setResultHandler(this);
 
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -63,12 +67,14 @@ public class BluetoothDevListActivity extends AppCompatActivity
     public void onClick(View v) {
         if (v.getId() == R.id.buttonBtScan) {
             if (!mIsScanning) {
+                progressBar.setVisibility(View.VISIBLE);
                 mAdapter.clearBluetoothDeviceList();
                 mIsScanning = mbluetoothScan.start();
                 if (mIsScanning) {
                     mButtonScan.setText(getString(R.string.button_stop_label));
                 }
             } else {
+                progressBar.setVisibility(View.INVISIBLE);
                 mbluetoothScan.stop();
                 mIsScanning = false;
                 mButtonScan.setText(getString(R.string.button_scan_label));
@@ -109,6 +115,7 @@ public class BluetoothDevListActivity extends AppCompatActivity
         runOnUiThread(new Thread() {
             public void run() {
                 mButtonScan.setText(getString(R.string.button_scan_label));
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
 

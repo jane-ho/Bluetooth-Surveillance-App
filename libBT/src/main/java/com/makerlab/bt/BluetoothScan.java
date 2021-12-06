@@ -82,7 +82,7 @@ public class BluetoothScan {
     }
 
     public boolean start() {
-        if (!mBluetoothAdapter.isEnabled()) {
+        if (mBluetoothAdapter!=null && !mBluetoothAdapter.isEnabled()) {
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             activity.startActivityForResult(intent, REQUEST_BT_ENABLE);
             return false;
