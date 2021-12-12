@@ -114,6 +114,7 @@ public class BluetoothDevListActivity extends AppCompatActivity
     public void onPostResult() {
         runOnUiThread(new Thread() {
             public void run() {
+                mIsScanning = false;
                 mButtonScan.setText(getString(R.string.button_scan_label));
                 progressBar.setVisibility(View.INVISIBLE);
             }
