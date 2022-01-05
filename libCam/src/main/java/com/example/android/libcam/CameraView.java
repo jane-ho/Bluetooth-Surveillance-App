@@ -2,12 +2,20 @@ package com.example.android.libcam;
 
 import android.content.Context;
 import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 /** A basic Camera preview class */
@@ -18,9 +26,15 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     // Camera configuration values
     public static final int PREVIEW_WIDTH = 720;
     public static final int PREVIEW_HEIGHT = 1280;
-    public static final int SCREEN_ORIENTATION = 0;
+    public static final int SCREEN_ORIENTATION = 90;
     // Preview display parameters (by portrait mode)
     private Camera.Size mPreviewSize = null;
+    //
+    private byte[] mImageData;
+    private LinkedList<byte[]> mQueue = new LinkedList<byte[]>();
+    private static final int MAX_BUFFER = 15;
+    private byte[] mLastFrame = null;
+    private int mFrameLength = 256;
 
     public CameraView(Context context, Camera camera) {
         super(context);
@@ -32,6 +46,20 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         mHolder.addCallback(this);
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        Camera.Parameters params = mCamera.getParameters();
+        List<Camera.Size> sizes = params.getSupportedPreviewSizes();
+        for (Camera.Size s : sizes) {
+            Log.i(TAG, "preview size = " + s.width + ", " + s.height);
+        }
+
+        params.setPreviewSize(640, 480); // set preview size. smaller is better
+        mCamera.setParameters(params);
+
+        mPreviewSize = mCamera.getParameters().getPreviewSize();
+        Log.i(TAG, "preview size = " + mPreviewSize.width + ", " + mPreviewSize.height);
+
+        int format = mCamera.getParameters().getPreviewFormat();
+        mFrameLength = mPreviewSize.width * mPreviewSize.height * ImageFormat.getBitsPerPixel(format) / 8;
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
@@ -61,6 +89,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         // stop preview before making changes
         try {
             mCamera.stopPreview();
+            resetBuff();
         } catch (Exception e){
             // ignore: tried to stop a non-existent preview
         }
@@ -70,6 +99,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
         // start preview with new settings
         try {
+            mCamera.setPreviewCallback(mPreviewCallback);
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
 
@@ -108,6 +138,97 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         super.onMeasure(
                 MeasureSpec.makeMeasureSpec(finalWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(finalHeight, MeasureSpec.EXACTLY));
+    }
+
+    public int getPreviewLength() {
+        return mFrameLength;
+    }
+
+    public int getPreviewWidth() {
+        return mPreviewSize.width;
+    }
+
+    public int getPreviewHeight() {
+        return mPreviewSize.height;
+    }
+
+    public void setCamera(Camera camera) {
+        mCamera = camera;
+    }
+
+    public byte[] getImageBuffer() {
+        synchronized (mQueue) {
+            if (mQueue.size() > 0) {
+                mLastFrame = mQueue.poll();
+            }
+        }
+
+        return mLastFrame;
+    }
+
+    private void resetBuff() {
+
+        synchronized (mQueue) {
+            mQueue.clear();
+            mLastFrame = null;
+        }
+    }
+
+    public void onPause() {
+        if (mCamera != null) {
+            mCamera.setPreviewCallback(null);
+            mCamera.stopPreview();
+        }
+        resetBuff();
+    }
+
+    private Camera.PreviewCallback mPreviewCallback = new Camera.PreviewCallback() {
+
+        @Override
+        public void onPreviewFrame(byte[] data, Camera camera) {
+            // TODO Auto-generated method stub
+            synchronized (mQueue) {
+                if (mQueue.size() == MAX_BUFFER) {
+                    mQueue.poll();
+                }
+                mQueue.add(data);
+            }
+        }
+    };
+
+    private void saveYUV(byte[] byteArray) {
+
+        YuvImage im = new YuvImage(byteArray, ImageFormat.NV21, mPreviewSize.width, mPreviewSize.height, null);
+        Rect r = new Rect(0, 0, mPreviewSize.width, mPreviewSize.height);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        im.compressToJpeg(r, 100, baos);
+
+        try {
+            FileOutputStream output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/yuv.jpg");
+            output.write(baos.toByteArray());
+            output.flush();
+            output.close();
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+        }
+    }
+
+    private void saveRAW(byte[] byteArray) {
+        try {
+            FileOutputStream file = new FileOutputStream(new File(Environment.getExternalStorageDirectory() + "/test.yuv"));
+            try {
+                file.write(mImageData);
+                file.flush();
+                file.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }
 

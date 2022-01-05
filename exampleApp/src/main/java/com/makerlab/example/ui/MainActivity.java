@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.android.libcam.CameraFragment;
 import com.example.android.libcam.CameraPreviewActivity;
@@ -104,6 +105,15 @@ public class MainActivity extends AppCompatActivity implements
             removeSharePerf();
             return true;
         }
+
+//        if (item.getItemId() == R.id.action_switch){
+//            SharedPreferences.Editor preferencesEditor = mSharedPref.edit();
+//            preferencesEditor.putString("mode", "server");
+//            preferencesEditor.apply();
+//            Intent intent = new Intent(this, CamServerActivity.class);
+//            startActivity(intent);
+//        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -261,7 +271,8 @@ public class MainActivity extends AppCompatActivity implements
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.remove(cameraFragment).commit();
-            cameraFragment.releaseCamera();
+//            cameraFragment.onStop();
+//            cameraFragment.releaseCamera();
         }
         if (D)
             Log.e(LOG_TAG, "closeCamFragment() :");

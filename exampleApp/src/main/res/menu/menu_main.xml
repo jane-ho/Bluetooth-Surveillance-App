@@ -8,4 +8,7 @@
         android:id="@+id/action_bluetooth_disconnect"
         android:enabled="false"
         android:title="disconnect" />
+    <item
+        android:id="@+id/action_switch"
+        android:title="Camera Mode" />
 </menu>
