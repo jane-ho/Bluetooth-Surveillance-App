@@ -1,34 +1,21 @@
-package com.example.android.libcam;
+package com.example.android.libcam.server;
 
 import static android.content.Context.WIFI_SERVICE;
-import static androidx.core.content.ContextCompat.getSystemService;
-import static com.example.android.libcam.CameraPreviewActivity.getCameraInstance;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.ColorSpace;
 import android.hardware.Camera;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.android.libcam.server.SocketServer;
+import com.example.android.libcam.R;
 
 public class CameraFragment extends Fragment {
     private static final int MY_CAMERA_PERMISSION_CODE = 1000;

@@ -1,4 +1,4 @@
-package com.example.android.libcam;
+package com.example.android.libcam.server;
 
 import android.content.Context;
 import android.graphics.ImageFormat;

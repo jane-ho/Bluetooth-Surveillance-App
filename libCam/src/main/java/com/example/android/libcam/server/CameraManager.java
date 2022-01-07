@@ -1,8 +1,16 @@
-package com.example.android.libcam;
+package com.example.android.libcam.server;
 
+import static androidx.core.app.ActivityCompat.requestPermissions;
+import static androidx.core.content.ContextCompat.checkSelfPermission;
+
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.os.Build;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentTransaction;
 
 public class CameraManager {
     private Camera mCamera;
@@ -11,9 +19,9 @@ public class CameraManager {
 
     public CameraManager(Context context) {     // TODO: check camera permission
         mContext = context;
-        // Create an instance of Camera
         mCamera = getCameraInstance();
     }
+
 
     public Camera getCamera() {
         return mCamera;

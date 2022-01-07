@@ -1,22 +1,18 @@
-package com.example.android.libcam;
+package com.example.android.libcam.server;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.ImageFormat;
-import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.android.libcam.R;
 
 
 /**

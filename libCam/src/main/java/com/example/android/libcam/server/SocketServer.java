@@ -2,7 +2,6 @@ package com.example.android.libcam.server;
 
 import android.util.Log;
 
-import com.example.android.libcam.CameraView;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;

@@ -10,20 +10,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 
-import com.example.android.libcam.CameraFragment;
-import com.example.android.libcam.CameraPreviewActivity;
-import com.example.android.libcam.CameraView;
+import com.example.android.libcam.server.CameraFragment;
 import com.makerlab.bt.BluetoothConnect;
 import com.makerlab.bt.BluetoothScan;
 import com.makerlab.ui.BluetoothDevListActivity;
@@ -75,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements
             menuItem.setEnabled(false);
             menuItem = mMenuSetting.findItem(R.id.action_bluetooth_disconnect);
             menuItem.setEnabled(true);
+
+            mMenuSetting.findItem(R.id.action_switch).setTitle("Monitor Mode");
         }
         return true;
     }
@@ -106,13 +101,13 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
 
-//        if (item.getItemId() == R.id.action_switch){
-//            SharedPreferences.Editor preferencesEditor = mSharedPref.edit();
-//            preferencesEditor.putString("mode", "server");
-//            preferencesEditor.apply();
-//            Intent intent = new Intent(this, CamServerActivity.class);
-//            startActivity(intent);
-//        }
+        if (item.getItemId() == R.id.action_switch){
+            SharedPreferences.Editor preferencesEditor = mSharedPref.edit();
+            preferencesEditor.putString("mode", "client");
+            preferencesEditor.apply();
+            Intent intent = new Intent(this, MonitorActivity.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }

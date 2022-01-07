@@ -10,5 +10,5 @@
         android:title="disconnect" />
     <item
         android:id="@+id/action_switch"
-        android:title="Camera Mode" />
+        android:title="Monitor Mode" />
 </menu>

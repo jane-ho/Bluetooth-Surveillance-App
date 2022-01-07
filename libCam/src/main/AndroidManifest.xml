@@ -12,7 +12,7 @@
     <application>
         <activity
             android:label="Camera Preview"
-            android:name=".CameraPreviewActivity">
+            android:name=".server.CameraPreviewActivity">
         </activity>
     </application>
 </manifest>
