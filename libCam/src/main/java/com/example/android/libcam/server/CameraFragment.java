@@ -33,9 +33,8 @@ public class CameraFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static CameraFragment newInstance(String param1, String param2) {
-        CameraFragment fragment = new CameraFragment();
-        return fragment;
+    public static CameraFragment newInstance() {
+        return new CameraFragment();
     }
 
     @Override
@@ -56,7 +55,7 @@ public class CameraFragment extends Fragment {
                             mIsOn = false;
                             mButton.setText("Stop");
                         } else {
-                            closeSocketClient();
+                            closeSocketServer();
                             reset();
                         }
                     }
@@ -76,10 +75,6 @@ public class CameraFragment extends Fragment {
         return inflatedView;
     }
 
-    public static CameraFragment newInstance() {
-        return new CameraFragment();
-    }
-
     public void releaseCamera(){
 //        mCamera.release();
 //        mCameraManager.onPause();
@@ -90,7 +85,7 @@ public class CameraFragment extends Fragment {
         mIsOn = true;
     }
 
-    private void closeSocketClient() {
+    private void closeSocketServer() {
         if (mThread == null)
             return;
 
@@ -109,12 +104,13 @@ public class CameraFragment extends Fragment {
         super.onStart();
         mCameraManager.onResume();
         mPreview.setCamera(mCameraManager.getCamera());
+        mPreview.onResume();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        closeSocketClient();
+        closeSocketServer();
         mPreview.onPause();
         mCameraManager.onPause();              // release the camera immediately on pause event
         reset();

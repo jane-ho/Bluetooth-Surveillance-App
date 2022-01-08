@@ -16,12 +16,15 @@ import java.net.Socket;
 
 public class SocketServer extends Thread {
     private ServerSocket mServer;
-//    private DataListener mDataListener;
-//    private BufferManager mBufferManager;
 
     private CameraView mCameraPreview;
     private static final String TAG = "server socket";
     private int mPort;
+
+    BufferedInputStream inputStream = null;
+    BufferedOutputStream outputStream = null;
+    Socket mSocket = null;
+    ByteArrayOutputStream byteArray = null;
 
     public SocketServer(CameraView preview) {
         mCameraPreview = preview;
@@ -37,14 +40,13 @@ public class SocketServer extends Thread {
 
     @Override
     public void run() {
-        // TODO Auto-generated method stub
         super.run();
 
         System.out.println("server is waiting");
-        BufferedInputStream inputStream = null;
-        BufferedOutputStream outputStream = null;
-        Socket mSocket = null;
-        ByteArrayOutputStream byteArray = null;
+//        BufferedInputStream inputStream = null;
+//        BufferedOutputStream outputStream = null;
+//        Socket mSocket = null;
+//        ByteArrayOutputStream byteArray = null;
         try {
             mServer = new ServerSocket(mPort);
             while (!Thread.currentThread().isInterrupted()) {
@@ -141,17 +143,6 @@ public class SocketServer extends Thread {
 
     }
 
-    public void close() {
-        if (mServer != null) {
-            try {
-                mServer.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
-
     @Override
     public void interrupt() {
         super.interrupt();
@@ -161,7 +152,4 @@ public class SocketServer extends Thread {
             e.printStackTrace();
         }
     }
-//    public void setOnDataListener(DataListener listener) {
-//        mDataListener = listener;
-//    }
 }

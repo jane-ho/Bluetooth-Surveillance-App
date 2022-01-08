@@ -6,6 +6,7 @@
         <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/exampleApp/src/main/res/layout-land/fragment_main_control.xml" value="0.21516754850088182" />
         <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/exampleApp/src/main/res/layout/activity_cam_server_main.xml" value="0.23278985507246377" />
         <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/exampleApp/src/main/res/layout/activity_main.xml" value="0.24277456647398843" />
+        <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/exampleApp/src/main/res/layout/activity_monitor_main.xml" value="0.23278985507246377" />
         <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/exampleApp/src/main/res/layout/fragment_main_control.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/exampleApp/src/main/res/layout/fragment_main_front_page.xml" value="0.2" />
         <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/exampleApp/src/main/res/layout/protocol_select_spinner.xml" value="0.264" />
@@ -18,7 +19,9 @@
         <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/libBT/src/main/res/layout/activity_bluetooth_dev_list.xml" value="0.176" />
         <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/libBT/src/main/res/layout/devicelist_item.xml" value="0.6" />
         <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/libCam/src/main/res/layout/activity_camera_preview.xml" value="0.1" />
+        <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/libCam/src/main/res/layout/activity_monitor.xml" value="0.23278985507246377" />
         <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/libCam/src/main/res/layout/fragment_camera.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/janeh/Documents/_janeh/FYP/android/BTapp/libCam/src/main/res/layout/fragment_monitor.xml" value="0.23278985507246377" />
       </map>
     </option>
   </component>

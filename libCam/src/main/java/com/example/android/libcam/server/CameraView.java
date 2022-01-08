@@ -182,6 +182,20 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         resetBuff();
     }
 
+    public void onResume(){
+        if (mCamera != null) {
+            mCamera.setPreviewCallback(mPreviewCallback);
+            try {
+                mCamera.setPreviewDisplay(mHolder);
+                mCamera.setDisplayOrientation(SCREEN_ORIENTATION);
+                mCamera.startPreview();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mCamera.startPreview();
+        }
+    }
+
     private Camera.PreviewCallback mPreviewCallback = new Camera.PreviewCallback() {
 
         @Override

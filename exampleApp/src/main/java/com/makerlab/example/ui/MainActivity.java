@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements
         else {
             CameraFragment cameraFragment = CameraFragment.newInstance();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.layout_cam, cameraFragment,"CAMERAFRAGMENT").commit();
+            fragmentTransaction.add(R.id.layout_cam, cameraFragment,"CAMERA FRAGMENT").commit();
         }
 
 
@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements
 //        view.setVisibility(View.VISIBLE);
     }
     private void closeCamFragment() {
-        CameraFragment cameraFragment = (CameraFragment) getSupportFragmentManager().findFragmentByTag("CAMERAFRAGMENT");
+        CameraFragment cameraFragment = (CameraFragment) getSupportFragmentManager().findFragmentByTag("CAMERA FRAGMENT");
         if (cameraFragment != null) {
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
