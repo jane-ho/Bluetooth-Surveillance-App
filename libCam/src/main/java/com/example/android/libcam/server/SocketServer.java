@@ -13,6 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SocketServer extends Thread {
     private ServerSocket mServer;
@@ -25,6 +27,8 @@ public class SocketServer extends Thread {
     BufferedOutputStream outputStream = null;
     Socket mSocket = null;
     ByteArrayOutputStream byteArray = null;
+
+    private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     public SocketServer(CameraView preview) {
         mCameraPreview = preview;
@@ -43,10 +47,6 @@ public class SocketServer extends Thread {
         super.run();
 
         System.out.println("server is waiting");
-//        BufferedInputStream inputStream = null;
-//        BufferedOutputStream outputStream = null;
-//        Socket mSocket = null;
-//        ByteArrayOutputStream byteArray = null;
         try {
             mServer = new ServerSocket(mPort);
             while (!Thread.currentThread().isInterrupted()) {
@@ -57,64 +57,67 @@ public class SocketServer extends Thread {
 
                 mSocket = mServer.accept();
                 System.out.println("new socket");
+                executorService.submit(new ClientHandler(mSocket, mCameraPreview));
 
-                outputStream = new BufferedOutputStream(mSocket.getOutputStream());
-                inputStream = new BufferedInputStream(mSocket.getInputStream());
 
-                JsonObject jsonObj = new JsonObject();
-                jsonObj.addProperty("type", "data");
-                jsonObj.addProperty("length", mCameraPreview.getPreviewLength());
-                jsonObj.addProperty("width", mCameraPreview.getPreviewWidth());
-                jsonObj.addProperty("height", mCameraPreview.getPreviewHeight());
-
-                byte[] buff = new byte[256];
-                int len = 0;
-                String msg = null;
-                outputStream.write(jsonObj.toString().getBytes());
-                outputStream.flush();
-
-                while ((len = inputStream.read(buff)) != -1) {
-                    msg = new String(buff, 0, len);
-
-                    // JSON analysis
-                    JsonParser parser = new JsonParser();
-                    boolean isJSON = true;
-                    JsonElement element = null;
-                    try {
-                        element =  parser.parse(msg);
-                    }
-                    catch (JsonParseException e) {
-                        Log.e(TAG, "exception: " + e);
-                        isJSON = false;
-                    }
-                    if (isJSON && element != null) {
-                        JsonObject obj = element.getAsJsonObject();
-                        element = obj.get("state");
-                        if (element != null && element.getAsString().equals("ok")) {
-                            // send data
-                            while (true) {
-                                outputStream.write(mCameraPreview.getImageBuffer());
-                                outputStream.flush();
-
-                                if (Thread.currentThread().isInterrupted())
-                                    break;
-                            }
-
-                            break;
-                        }
-                    }
-                    else {
-                        break;
-                    }
-                }
-
-                outputStream.close();
-                inputStream.close();
+//                outputStream = new BufferedOutputStream(mSocket.getOutputStream());
+//                inputStream = new BufferedInputStream(mSocket.getInputStream());
+//
+//                JsonObject jsonObj = new JsonObject();
+//                jsonObj.addProperty("type", "data");
+//                jsonObj.addProperty("length", mCameraPreview.getPreviewLength());
+//                jsonObj.addProperty("width", mCameraPreview.getPreviewWidth());
+//                jsonObj.addProperty("height", mCameraPreview.getPreviewHeight());
+//
+//                byte[] buff = new byte[256];
+//                int len = 0;
+//                String msg = null;
+//                outputStream.write(jsonObj.toString().getBytes());
+//                outputStream.flush();
+//
+//                while ((len = inputStream.read(buff)) != -1) {
+//                    msg = new String(buff, 0, len);
+//
+//                    // JSON analysis
+//                    JsonParser parser = new JsonParser();
+//                    boolean isJSON = true;
+//                    JsonElement element = null;
+//                    try {
+//                        element =  parser.parse(msg);
+//                    }
+//                    catch (JsonParseException e) {
+//                        Log.e(TAG, "exception: " + e);
+//                        isJSON = false;
+//                    }
+//                    if (isJSON && element != null) {
+//                        JsonObject obj = element.getAsJsonObject();
+//                        element = obj.get("state");
+//                        if (element != null && element.getAsString().equals("ok")) {
+//                            // send data
+//                            while (true) {
+//                                outputStream.write(mCameraPreview.getImageBuffer());
+//                                outputStream.flush();
+//
+//                                if (Thread.currentThread().isInterrupted())
+//                                    break;
+//                            }
+//
+//                            break;
+//                        }
+//                    }
+//                    else {
+//                        break;
+//                    }
+//                }
+//
+//                outputStream.close();
+//                inputStream.close();
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
+            executorService.shutdownNow();
             try {
                 if (outputStream != null) {
                     outputStream.close();
@@ -146,10 +149,114 @@ public class SocketServer extends Thread {
     @Override
     public void interrupt() {
         super.interrupt();
+        executorService.shutdownNow();
         try {
             mServer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private class ClientHandler implements Runnable {
+        Socket mSocket;
+        private CameraView mCameraPreview;
+
+        public ClientHandler(Socket socket, CameraView mCameraPreview) {
+            this.mSocket = socket;
+            this.mCameraPreview = mCameraPreview;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    if (byteArray != null)
+                        byteArray.reset();
+                    else
+                        byteArray = new ByteArrayOutputStream();
+
+                    outputStream = new BufferedOutputStream(mSocket.getOutputStream());
+                    inputStream = new BufferedInputStream(mSocket.getInputStream());
+
+                    JsonObject jsonObj = new JsonObject();
+                    jsonObj.addProperty("type", "data");
+                    jsonObj.addProperty("length", mCameraPreview.getPreviewLength());
+                    jsonObj.addProperty("width", mCameraPreview.getPreviewWidth());
+                    jsonObj.addProperty("height", mCameraPreview.getPreviewHeight());
+
+                    byte[] buff = new byte[256];
+                    int len = 0;
+                    String msg = null;
+                    outputStream.write(jsonObj.toString().getBytes());
+                    outputStream.flush();
+
+                    while ((len = inputStream.read(buff)) != -1) {
+                        msg = new String(buff, 0, len);
+
+                        // JSON analysis
+                        JsonParser parser = new JsonParser();
+                        boolean isJSON = true;
+                        JsonElement element = null;
+                        try {
+                            element =  parser.parse(msg);
+                        }
+                        catch (JsonParseException e) {
+                            Log.e(TAG, "exception: " + e);
+                            isJSON = false;
+                        }
+                        if (isJSON && element != null) {
+                            JsonObject obj = element.getAsJsonObject();
+                            element = obj.get("state");
+                            if (element != null && element.getAsString().equals("ok")) {
+                                // send data
+                                while (true) {
+                                    outputStream.write(mCameraPreview.getImageBuffer());
+                                    outputStream.flush();
+
+                                    if (Thread.currentThread().isInterrupted())
+                                        break;
+                                }
+
+                                break;
+                            }
+                        }
+                        else {
+                            break;
+                        }
+                    }
+
+                    outputStream.close();
+                    inputStream.close();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (outputStream != null) {
+                        outputStream.close();
+                        outputStream = null;
+                    }
+
+                    if (inputStream != null) {
+                        inputStream.close();
+                        inputStream = null;
+                    }
+
+                    if (mSocket != null) {
+                        mSocket.close();
+                        mSocket = null;
+                    }
+
+                    if (byteArray != null) {
+                        byteArray.close();
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
         }
     }
 }
