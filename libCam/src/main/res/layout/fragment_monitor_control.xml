@@ -67,6 +67,7 @@
             app:layout_constraintTop_toBottomOf="@+id/centerButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
     <!--        <Button-->
     <!--            android:id="@+id/portraitButton"-->
     <!--            android:layout_width="@dimen/button_width"-->
@@ -99,5 +100,4 @@
     <!--            app:layout_constraintBottom_toBottomOf="@+id/portraitButton"-->
     <!--            app:layout_constraintEnd_toEndOf="parent"-->
     <!--            app:layout_constraintStart_toEndOf="@+id/portraitButton" />-->
-    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 

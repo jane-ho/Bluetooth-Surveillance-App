@@ -196,6 +196,8 @@ public class MonitorFragment extends Fragment implements DataListener {
         fragmentTransaction.replace(R.id.layout_control, monitorControl).commit();
     }
     private void closeControlFragment() {
+        if (getActivity() == null)
+            return;
         Fragment mainFragmentControl = getActivity().getSupportFragmentManager().findFragmentById(R.id.layout_control);
         if (mainFragmentControl != null) {
             FragmentTransaction fragmentTransaction =

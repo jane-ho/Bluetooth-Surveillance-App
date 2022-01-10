@@ -24,8 +24,9 @@ public class MonitorControl extends Fragment implements View.OnClickListener {
             0, // dummy value
             R.id.forwardButton, R.id.rightButton,
             R.id.backwardButton, R.id.leftButton,
-            R.id.centerButton, R.id.portraitButton,
-            R.id.landscapeRightButton, R.id.landscapeLeftButton,
+            R.id.centerButton,
+//            R.id.portraitButton,
+//            R.id.landscapeRightButton, R.id.landscapeLeftButton,
     };
 
     private Timer mTimer;
