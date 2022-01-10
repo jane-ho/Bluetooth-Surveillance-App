@@ -20,6 +20,7 @@
             android:layout_width="@dimen/button_width"
             android:layout_height="@dimen/button_height"
             android:text="Up/Forward"
+            android:hint="forward"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,6 +31,7 @@
             android:layout_height="@dimen/button_height"
             android:layout_marginStart="8dp"
             android:text="Right"
+            android:hint="right"
             app:layout_constraintBaseline_toBaselineOf="@+id/centerButton"
             app:layout_constraintStart_toEndOf="@+id/centerButton" />
 
@@ -38,6 +40,7 @@
             android:layout_width="@dimen/button_width"
             android:layout_height="@dimen/button_height"
             android:text="Center"
+            android:hint="center"
             app:layout_constraintEnd_toEndOf="@+id/forwardButton"
             app:layout_constraintStart_toStartOf="@+id/forwardButton"
             app:layout_constraintTop_toBottomOf="@+id/forwardButton" />
@@ -48,6 +51,7 @@
             android:layout_height="@dimen/button_height"
             android:layout_marginEnd="8dp"
             android:text="Left"
+            android:hint="left"
             app:layout_constraintBaseline_toBaselineOf="@+id/centerButton"
             app:layout_constraintEnd_toStartOf="@+id/centerButton" />
 
@@ -57,39 +61,43 @@
             android:layout_height="@dimen/button_height"
             android:layout_marginTop="8dp"
             android:text="Down/Backward"
+            android:hint="backward"
             app:layout_constraintEnd_toEndOf="@+id/centerButton"
             app:layout_constraintStart_toStartOf="@+id/centerButton"
             app:layout_constraintTop_toBottomOf="@+id/centerButton" />
 
-        <Button
-            android:id="@+id/portraitButton"
-            android:layout_width="@dimen/button_width"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginTop="16dp"
-            android:text="Portrait"
-            app:layout_constraintEnd_toEndOf="@+id/backwardButton"
-            app:layout_constraintStart_toStartOf="@+id/backwardButton"
-            app:layout_constraintTop_toBottomOf="@+id/backwardButton" />
-
-        <Button
-            android:id="@+id/landscapeLeftButton"
-            android:layout_width="@dimen/button_width"
-            android:layout_height="@dimen/button_height"
-            android:text="Landscape left"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/portraitButton"
-            app:layout_constraintEnd_toStartOf="@+id/portraitButton"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/landscapeRightButton"
-            android:layout_width="@dimen/button_width"
-            android:layout_height="@dimen/button_height"
-            android:text="Landscape right"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/portraitButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/portraitButton" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--        <Button-->
+    <!--            android:id="@+id/portraitButton"-->
+    <!--            android:layout_width="@dimen/button_width"-->
+    <!--            android:layout_height="@dimen/button_height"-->
+    <!--            android:layout_marginTop="16dp"-->
+    <!--            android:text="Portrait"-->
+    <!--            android:hint="portrait"-->
+    <!--            app:layout_constraintEnd_toEndOf="@+id/backwardButton"-->
+    <!--            app:layout_constraintStart_toStartOf="@+id/backwardButton"-->
+    <!--            app:layout_constraintTop_toBottomOf="@+id/backwardButton" />-->
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!--        <Button-->
+    <!--            android:id="@+id/landscapeLeftButton"-->
+    <!--            android:layout_width="@dimen/button_width"-->
+    <!--            android:layout_height="@dimen/button_height"-->
+    <!--            android:text="Landscape left"-->
+    <!--            android:hint="landleft"-->
+    <!--            android:textSize="12sp"-->
+    <!--            app:layout_constraintBottom_toBottomOf="@+id/portraitButton"-->
+    <!--            app:layout_constraintEnd_toStartOf="@+id/portraitButton"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/landscapeRightButton"-->
+    <!--            android:layout_width="@dimen/button_width"-->
+    <!--            android:layout_height="@dimen/button_height"-->
+    <!--            android:text="Landscape right"-->
+    <!--            android:hint="landright"-->
+    <!--            android:textSize="12sp"-->
+    <!--            app:layout_constraintBottom_toBottomOf="@+id/portraitButton"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toEndOf="@+id/portraitButton" />-->
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+

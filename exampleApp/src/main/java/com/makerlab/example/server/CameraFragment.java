@@ -1,4 +1,4 @@
-package com.example.android.libcam.server;
+package com.makerlab.example.server;
 
 import static android.content.Context.WIFI_SERVICE;
 
@@ -50,7 +50,7 @@ public class CameraFragment extends Fragment {
                     public void onClick(View v) {
                         // get an image from the camera
                         if (mIsOn) {
-                            mThread = new SocketServer(mPreview, mPort);
+                            mThread = new SocketServer(mPreview, mPort, CameraFragment.this);
 
                             mIsOn = false;
                             mButton.setText("Stop");

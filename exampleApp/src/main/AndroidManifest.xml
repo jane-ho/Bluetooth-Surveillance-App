@@ -21,7 +21,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
-        <activity android:name="com.example.android.libcam.server.CameraPreviewActivity" />
+        <activity android:name="com.makerlab.example.server.CameraPreviewActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

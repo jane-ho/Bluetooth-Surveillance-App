@@ -74,7 +74,7 @@ public class MonitorControl extends Fragment implements View.OnClickListener {
             byte[] payload = new byte[0];
             Button b = (Button) view;
             try {
-                payload = (b.getText().toString()+"\r\n").getBytes("iso8859-1");    // TODO: payload content
+                payload = (b.getHint().toString()+"\r\n").getBytes("iso8859-1");    // TODO: payload content
                 mQueue.add(payload);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -85,12 +85,6 @@ public class MonitorControl extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-//        MainActivity activity = (MainActivity) getActivity();
-//        mBluetoothConnect = activity.getBluetoothConnect();
-//        mDataSendTimer = new Timer();
-//        mDataSendTimer.scheduleAtFixedRate(new DataSendTimerTask(), 1000, 250);
-//        if (D)
-//            Log.e(LOG_TAG, "onStart()");
         if (parent==null) Log.d("MonitorControl", "onStart: parent is null");
         mSocket = parent.getSocket();
         mTimer = new Timer();
@@ -100,12 +94,6 @@ public class MonitorControl extends Fragment implements View.OnClickListener {
     @Override
     public void onStop() {
         super.onStop();
-//        if (mDataSendTimer != null) {
-//            mDataSendTimer.cancel();
-//        }
-//        mBluetoothConnect = null;
-//        if (D)
-//            Log.e(LOG_TAG, "onStop()");
         if (mTimer != null){
             mTimer.cancel();
         }

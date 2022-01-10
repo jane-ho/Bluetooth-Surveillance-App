@@ -1,28 +1,21 @@
 package com.example.android.libcam.client;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.android.libcam.R;
-import com.example.android.libcam.server.SocketServer;
 
 import java.util.LinkedList;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 public class MonitorFragment extends Fragment implements DataListener {
     private final static String TAG = MonitorFragment.class.getSimpleName();
@@ -66,7 +59,6 @@ public class MonitorFragment extends Fragment implements DataListener {
 
                     mIsOn = false;
                     mButton.setText("Disconnect");
-//                    displayControlFragment();
                 } else {
                     closeSocketClient();
                     reset();
@@ -74,7 +66,6 @@ public class MonitorFragment extends Fragment implements DataListener {
 
             }
         });
-
         return inflatedView;
     }
 
@@ -122,8 +113,8 @@ public class MonitorFragment extends Fragment implements DataListener {
 //        } else {
 //            return new Dimension(mImage.getWidth(null), mImage.getHeight(null));
 //        }
-//    }
 
+//    }
     @Override
     public void onDirty(Bitmap bufferedImage) {
         updateUI(bufferedImage);
@@ -143,7 +134,18 @@ public class MonitorFragment extends Fragment implements DataListener {
 
     @Override
     public void onConnect() {
-        displayControlFragment();
+        iv_monitor.post(new Runnable() {
+            @Override
+            public void run() {
+                showMonitor();
+            }
+        });
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                displayControlFragment();
+            }
+        });
     }
 
     private void reset() {
@@ -158,6 +160,7 @@ public class MonitorFragment extends Fragment implements DataListener {
             @Override
             public void run() {
                 closeControlFragment();
+                hideMonitor();
             }
         });
     }
@@ -179,9 +182,13 @@ public class MonitorFragment extends Fragment implements DataListener {
     public void onStop() {
         super.onStop();
         closeSocketClient();
-        reset();
+//        reset();
     }
 
+    private void hideMonitor() {
+        iv_monitor.setVisibility(View.INVISIBLE);
+    }
+    private void showMonitor() { iv_monitor.setVisibility(View.VISIBLE); }
 
     private void displayControlFragment() {
         MonitorControl monitorControl = new MonitorControl(this);

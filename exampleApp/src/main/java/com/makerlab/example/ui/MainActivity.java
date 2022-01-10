@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.android.libcam.server.CameraFragment;
+import com.makerlab.example.server.CameraFragment;
 import com.makerlab.bt.BluetoothConnect;
 import com.makerlab.bt.BluetoothScan;
 import com.makerlab.ui.BluetoothDevListActivity;

@@ -1,4 +1,4 @@
-package com.example.android.libcam.server;
+package com.makerlab.example.server;
 
 import android.Manifest;
 import android.content.pm.ActivityInfo;

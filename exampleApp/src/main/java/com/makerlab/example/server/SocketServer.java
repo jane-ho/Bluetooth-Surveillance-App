@@ -1,11 +1,16 @@
-package com.example.android.libcam.server;
+package com.makerlab.example.server;
 
+import android.app.Activity;
 import android.util.Log;
+
+import androidx.fragment.app.Fragment;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.makerlab.bt.BluetoothConnect;
+import com.makerlab.example.ui.MainActivity;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -13,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,6 +28,7 @@ public class SocketServer extends Thread {
     private CameraView mCameraPreview;
     private static final String TAG = "server socket";
     private int mPort;
+    private Fragment fragment;
 
     BufferedInputStream inputStream = null;
     BufferedOutputStream outputStream = null;
@@ -32,15 +37,17 @@ public class SocketServer extends Thread {
 
     private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-    public SocketServer(CameraView preview) {
+    public SocketServer(CameraView preview, Fragment fragment) {
         mCameraPreview = preview;
         mPort = 8888;
+        this.fragment = fragment;
         start();
     }
 
-    public SocketServer(CameraView preview, int port) {
+    public SocketServer(CameraView preview, int port, Fragment fragment) {
         mCameraPreview = preview;
         mPort = port;
+        this.fragment = fragment;
         start();
     }
 
@@ -60,7 +67,7 @@ public class SocketServer extends Thread {
                 mSocket = mServer.accept();
                 System.out.println("new socket");
                 executorService.submit(new ClientHandler(mSocket, mCameraPreview));
-                executorService.submit(new Reader(mSocket));
+                executorService.submit(new Reader(mSocket, fragment));
 
 //                outputStream = new BufferedOutputStream(mSocket.getOutputStream());
 //                inputStream = new BufferedInputStream(mSocket.getInputStream());
@@ -264,9 +271,11 @@ public class SocketServer extends Thread {
 
     private class Reader implements Runnable {
         Socket mSocket;
+        Fragment fragment;
 
-        public Reader(Socket socket) {
+        public Reader(Socket socket, Fragment fragment) {
             this.mSocket = socket;
+            this.fragment = fragment;
         }
 
         @Override
@@ -298,7 +307,13 @@ public class SocketServer extends Thread {
                             element = obj.get("command");
                             if (element != null) {
                                 // TODO
-                                Log.d(TAG, "read command: "+ element.getAsString());
+                                String cmd = element.getAsString();
+                                Log.d(TAG, "read command: "+ cmd);
+                                MainActivity activity = (MainActivity) fragment.getActivity();
+                                BluetoothConnect mBtConnect = activity.getBluetoothConnect();
+                                synchronized (mBtConnect){
+                                    mBtConnect.send((cmd+"/r/n").getBytes("iso8859-1"));
+                                }
                             }
                         }
                         else {
