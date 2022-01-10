@@ -106,7 +106,7 @@ public class BufferManager extends Thread {
                     Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
 
                     mListener.onDirty(image);
-                    System.out.println("time cost = " + (System.currentTimeMillis() - t));
+//                    System.out.println("time cost = " + (System.currentTimeMillis() - t));
                 }
 
             }

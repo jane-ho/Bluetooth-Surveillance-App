@@ -93,7 +93,6 @@ public class CameraFragment extends Fragment {
         try {
             mThread.join();
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         mThread = null;

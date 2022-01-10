@@ -200,7 +200,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
-            // TODO Auto-generated method stub
             synchronized (mQueue) {
                 if (mQueue.size() == MAX_BUFFER) {
                     mQueue.poll();
@@ -235,12 +234,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                 file.flush();
                 file.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

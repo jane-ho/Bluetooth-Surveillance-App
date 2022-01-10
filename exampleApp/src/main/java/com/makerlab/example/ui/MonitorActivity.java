@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.libcam.client.MonitorControl;
 import com.example.android.libcam.client.MonitorFragment;
 
 public class MonitorActivity extends AppCompatActivity {

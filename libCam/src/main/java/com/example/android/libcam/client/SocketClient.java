@@ -6,6 +6,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -97,6 +98,8 @@ public class SocketClient extends Thread {
                 }
             }
 
+            mDataListener.onConnect();
+
             if (imageBuff != null) {
                 Log.d(TAG, "run: writing ok");
                 JsonObject jsonObj = new JsonObject();
@@ -178,6 +181,29 @@ public class SocketClient extends Thread {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void send(byte[] payload) {
+        if (outputStream != null){
+            if (payload == null || payload.length == 0) {
+                Log.d(TAG, "send(): invalid payload");
+                return ;
+            }
+            JsonObject jsonObj = new JsonObject();
+            try {
+                String str = new String(payload,"iso8859-1");
+                Log.d(TAG, "send(): writing "+str);
+                jsonObj.addProperty("command", str);
+                try {
+                    outputStream.write(jsonObj.toString().getBytes());
+                    outputStream.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -13,6 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -58,7 +60,7 @@ public class SocketServer extends Thread {
                 mSocket = mServer.accept();
                 System.out.println("new socket");
                 executorService.submit(new ClientHandler(mSocket, mCameraPreview));
-
+                executorService.submit(new Reader(mSocket));
 
 //                outputStream = new BufferedOutputStream(mSocket.getOutputStream());
 //                inputStream = new BufferedInputStream(mSocket.getInputStream());
@@ -252,6 +254,69 @@ public class SocketServer extends Thread {
                         byteArray.close();
                     }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    }
+
+    private class Reader implements Runnable {
+        Socket mSocket;
+
+        public Reader(Socket socket) {
+            this.mSocket = socket;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    inputStream = new BufferedInputStream(mSocket.getInputStream());
+
+                    byte[] buff = new byte[256];
+                    int len = 0;
+                    String msg = null;
+
+                    while ((len = inputStream.read(buff)) != -1) {
+                        msg = new String(buff, 0, len);
+
+                        // JSON analysis
+                        JsonParser parser = new JsonParser();
+                        boolean isJSON = true;
+                        JsonElement element = null;
+                        try {
+                            element =  parser.parse(msg);
+                        }
+                        catch (JsonParseException e) {
+                            Log.e(TAG, "exception: " + e);
+                            isJSON = false;
+                        }
+                        if (isJSON && element != null) {
+                            JsonObject obj = element.getAsJsonObject();
+                            element = obj.get("command");
+                            if (element != null) {
+                                // TODO
+                                Log.d(TAG, "read command: "+ element.getAsString());
+                            }
+                        }
+                        else {
+                            break;
+                        }
+                    }
+
+                    inputStream.close();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (inputStream != null) {
+                        inputStream.close();
+                        inputStream = null;
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

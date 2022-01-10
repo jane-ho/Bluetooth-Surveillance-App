@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Looper;
 import android.util.Log;
@@ -65,6 +66,7 @@ public class MonitorFragment extends Fragment implements DataListener {
 
                     mIsOn = false;
                     mButton.setText("Disconnect");
+//                    displayControlFragment();
                 } else {
                     closeSocketClient();
                     reset();
@@ -139,6 +141,11 @@ public class MonitorFragment extends Fragment implements DataListener {
         reset();
     }
 
+    @Override
+    public void onConnect() {
+        displayControlFragment();
+    }
+
     private void reset() {
         mButton.post(new Runnable() {
             @Override
@@ -147,6 +154,12 @@ public class MonitorFragment extends Fragment implements DataListener {
             }
         });
         mIsOn = true;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                closeControlFragment();
+            }
+        });
     }
 
     private void closeSocketClient() {
@@ -167,5 +180,24 @@ public class MonitorFragment extends Fragment implements DataListener {
         super.onStop();
         closeSocketClient();
         reset();
+    }
+
+
+    private void displayControlFragment() {
+        MonitorControl monitorControl = new MonitorControl(this);
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.layout_control, monitorControl).commit();
+    }
+    private void closeControlFragment() {
+        Fragment mainFragmentControl = getActivity().getSupportFragmentManager().findFragmentById(R.id.layout_control);
+        if (mainFragmentControl != null) {
+            FragmentTransaction fragmentTransaction =
+                    getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.remove(mainFragmentControl).commit();
+        }
+    }
+
+    public SocketClient getSocket(){
+        return mThread;
     }
 }
