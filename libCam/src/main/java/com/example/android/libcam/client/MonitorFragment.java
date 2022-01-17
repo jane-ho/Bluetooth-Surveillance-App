@@ -43,8 +43,8 @@ public class MonitorFragment extends Fragment implements DataListener {
         View inflatedView = inflater.inflate(R.layout.fragment_monitor, container, false);
         iv_monitor = inflatedView.findViewById(R.id.imageView_monitor);
 
-        EditText et_ip = inflatedView.findViewById(R.id.editText_ip);
-        et_ip.setText("192.168.1.38");
+//        EditText et_ip = inflatedView.findViewById(R.id.editText_ip);
+//        et_ip.setText("192.168.1.38");
 
         mButton = inflatedView.findViewById(R.id.button_connect);
         mButton.setOnClickListener(new View.OnClickListener() {

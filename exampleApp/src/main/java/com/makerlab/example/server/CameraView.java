@@ -66,8 +66,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
             mCamera.setPreviewDisplay(holder);
-//            mCamera.setDisplayOrientation(SCREEN_ORIENTATION);
-            mCamera.setDisplayOrientation(90);
+            mCamera.setDisplayOrientation(SCREEN_ORIENTATION);
             mCamera.startPreview();
         } catch (IOException e) {
             Log.d(TAG, "Error setting camera preview: " + e.getMessage());
@@ -125,13 +124,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         // Consider calculated size is overflow
-        int calculatedHeight = (int)(originalWidth * DISPLAY_HEIGHT / DISPLAY_WIDTH);
+        int calculatedHeight = (int)(originalWidth/2 * DISPLAY_HEIGHT / DISPLAY_WIDTH);
         int finalWidth, finalHeight;
-        if (calculatedHeight > originalHeight) {
-            finalWidth = (int)(originalHeight * DISPLAY_WIDTH / DISPLAY_HEIGHT);
-            finalHeight = (int) originalHeight;
+        if (calculatedHeight > originalHeight/2) {
+            finalWidth = (int)(originalHeight/2 * DISPLAY_WIDTH / DISPLAY_HEIGHT);
+            finalHeight = (int) originalHeight/2;
         } else {
-            finalWidth = (int) originalWidth;
+            finalWidth = (int) originalWidth/2;
             finalHeight = calculatedHeight;
         }
 

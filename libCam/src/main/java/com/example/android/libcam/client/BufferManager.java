@@ -90,7 +90,12 @@ public class BufferManager extends Thread {
                 data = mYUVQueue.poll();
 
                 if (data != null) {
-                    long t = System.currentTimeMillis();
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    YuvImage yuvImage = new YuvImage(data, ImageFormat.NV21, mWidth, mHeight, null);
+                    yuvImage.compressToJpeg(new Rect(0, 0, mWidth, mHeight), 50, out);
+                    byte[] imageBytes = out.toByteArray();
+                    Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+//                    long t = System.currentTimeMillis();
 //                    Bitmap bufferedImage = null;
 //                    int[] rgbArray = Utils.convertYUVtoRGB(data, mWidth, mHeight);
 //                    bufferedImage = new BufferedImage(mWidth, mHeight, BufferedImage.TYPE_USHORT_565_RGB);
@@ -99,11 +104,6 @@ public class BufferManager extends Thread {
 //                    bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
 //                    bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(data));
 
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    YuvImage yuvImage = new YuvImage(data, ImageFormat.NV21, mWidth, mHeight, null);
-                    yuvImage.compressToJpeg(new Rect(0, 0, mWidth, mHeight), 50, out);
-                    byte[] imageBytes = out.toByteArray();
-                    Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
 
                     mListener.onDirty(image);
 //                    System.out.println("time cost = " + (System.currentTimeMillis() - t));
