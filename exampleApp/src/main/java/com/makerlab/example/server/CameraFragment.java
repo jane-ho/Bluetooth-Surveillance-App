@@ -16,6 +16,15 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.example.android.libcam.R;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class CameraFragment extends Fragment {
     private static final int MY_CAMERA_PERMISSION_CODE = 1000;
@@ -62,9 +71,7 @@ public class CameraFragment extends Fragment {
                 }
         );
         TextView textview_info = inflatedView.findViewById(R.id.textview_info);
-        WifiManager wm = (WifiManager) getContext().getApplicationContext().getSystemService(WIFI_SERVICE);
-        mIP = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-        textview_info.setText(mIP+":"+Integer.toString(mPort));
+        showIPAddress(textview_info);
 
         mCameraManager = new CameraManager(getContext());
         // Create our Preview view and set it as the content of our activity.
@@ -73,6 +80,40 @@ public class CameraFragment extends Fragment {
         container_preview.addView(mPreview);
 
         return inflatedView;
+    }
+
+    private void showIPAddress(TextView textview){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try  {
+                    try{
+                        String urlstr = "https://api.ipify.org/?format=json";
+                        URL url = new URL(urlstr);
+                        URLConnection request = url.openConnection();
+                        request.connect();
+                        JsonParser jp = new JsonParser(); //from gson
+                        JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+                        JsonObject obj = root.getAsJsonObject();
+                        JsonElement element = obj.get("ip");
+                        mIP = element.getAsString();
+                    } catch (IOException e) {
+                        WifiManager wm = (WifiManager) getContext().getApplicationContext().getSystemService(WIFI_SERVICE);
+                        mIP = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+                    } finally {
+                        textview.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                textview.setText(mIP+":"+Integer.toString(mPort));
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
     }
 
     public void releaseCamera(){

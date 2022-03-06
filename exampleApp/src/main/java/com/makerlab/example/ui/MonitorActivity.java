@@ -35,6 +35,8 @@ public class MonitorActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         this.menu = menu;
+        this.menu.removeItem(R.id.action_bluetooth_scan);
+        this.menu.removeItem(R.id.action_bluetooth_disconnect);
         this.menu.findItem(R.id.action_switch).setTitle("Camera Mode");
         return true;
     }
