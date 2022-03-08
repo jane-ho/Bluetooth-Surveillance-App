@@ -71,7 +71,9 @@ public class CameraFragment extends Fragment {
                 }
         );
         TextView textview_info = inflatedView.findViewById(R.id.textview_info);
-        showIPAddress(textview_info);
+        WifiManager wm = (WifiManager) getContext().getApplicationContext().getSystemService(WIFI_SERVICE);
+        mIP = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        textview_info.setText(mIP+":"+Integer.toString(mPort));
 
         mCameraManager = new CameraManager(getContext());
         // Create our Preview view and set it as the content of our activity.
@@ -82,7 +84,7 @@ public class CameraFragment extends Fragment {
         return inflatedView;
     }
 
-    private void showIPAddress(TextView textview){
+    private void showPublicIPAddress(TextView textview){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
