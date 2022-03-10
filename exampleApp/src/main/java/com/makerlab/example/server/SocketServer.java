@@ -161,6 +161,24 @@ public class SocketServer extends Thread {
         executorService.shutdownNow();
         try {
             mServer.close();
+            if (outputStream != null) {
+                outputStream.close();
+                outputStream = null;
+            }
+
+            if (inputStream != null) {
+                inputStream.close();
+                inputStream = null;
+            }
+
+            if (mSocket != null) {
+                mSocket.close();
+                mSocket = null;
+            }
+
+            if (byteArray != null) {
+                byteArray.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

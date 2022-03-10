@@ -2,6 +2,7 @@ package com.makerlab.example.ui;
 
 import android.Manifest;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -45,11 +47,11 @@ public class MainActivity extends AppCompatActivity implements
         mBluetoothConnect.setConnectionHandler(this);
 
         mSharedPref = getSharedPreferences(mSharedPrefFile, MODE_PRIVATE);
-        String bluetothDeviceAddr = mSharedPref.getString(BLUETOOT_REMOTE_DEVICE, null);
-        if (bluetothDeviceAddr != null) {
+        String bleDeviceAddr = mSharedPref.getString(BLUETOOT_REMOTE_DEVICE, null);
+        if (bleDeviceAddr != null) {
             //Log.e(LOG_TAG, "onCreate(): found share perference");
             mBluetoothScan = new BluetoothScan(this);
-            BluetoothDevice mBluetoothDevice = mBluetoothScan.getBluetoothDevice(bluetothDeviceAddr);
+            BluetoothDevice mBluetoothDevice = mBluetoothScan.getBluetoothDevice(bleDeviceAddr);
             mBluetoothConnect.connectBluetooth(mBluetoothDevice);
             if (D)
                 Log.e(LOG_TAG, "onCreate() - connecting bluetooth device");
@@ -157,23 +159,43 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionSuccess(BluetoothConnect instant) {
-        SharedPreferences.Editor preferencesEditor = mSharedPref.edit();
-        preferencesEditor.putString(BLUETOOT_REMOTE_DEVICE, mBluetoothConnect.getDeviceAddress());
-        preferencesEditor.apply();
         if (D)
             Log.e(LOG_TAG, "onConnectionSuccess() - connected");
+
         runOnUiThread(new Thread() {
             public void run() {
-                runOnUiThread(new Thread() {
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
-                        if (mMenuSetting != null) {
-                            enableConnectMenuItem(false);
+                // ask for remembering bluetooth device or not
+                String bleDeviceAddr = mSharedPref.getString(BLUETOOT_REMOTE_DEVICE, null);
+                if (bleDeviceAddr == null || bleDeviceAddr != mBluetoothConnect.getDeviceAddress()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Remember this device?");
+                    builder.setMessage("Remember this device?");
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // add to SharedPreferences
+                            SharedPreferences.Editor preferencesEditor = mSharedPref.edit();
+                            preferencesEditor.putString(BLUETOOT_REMOTE_DEVICE, mBluetoothConnect.getDeviceAddress());
+                            preferencesEditor.apply();
+                            dialog.dismiss();
                         }
-                        displayControlFragment();
-                        displayCamFragment();
-                    }
-                });
+                    });
+                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+
+                Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+                if (mMenuSetting != null) {
+                    enableConnectMenuItem(false);
+                }
+                displayControlFragment();
+                displayCamFragment();
             }
         });
     }

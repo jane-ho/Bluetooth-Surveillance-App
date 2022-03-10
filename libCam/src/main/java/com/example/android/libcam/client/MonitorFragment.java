@@ -176,6 +176,8 @@ public class MonitorFragment extends Fragment implements DataListener {
             e.printStackTrace();
         }
         mThread = null;
+
+        mQueue.clear();
     }
 
     @Override

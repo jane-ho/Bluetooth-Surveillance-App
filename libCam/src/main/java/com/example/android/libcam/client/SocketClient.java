@@ -22,7 +22,7 @@ public class SocketClient extends Thread {
     private DataListener mDataListener;
     private BufferManager mBufferManager;
     private static final String TAG = "socket";
-    private String mIP = "192.168.1.38";
+    private String mIP = "";
     private int mPort = 8888;
 
     BufferedInputStream inputStream = null;
@@ -178,6 +178,10 @@ public class SocketClient extends Thread {
             if (byteArray != null) {
                 byteArray.close();
             }
+//
+//            if (mBufferManager != null){
+//                mBufferManager.close();
+//            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -185,25 +189,33 @@ public class SocketClient extends Thread {
     }
 
     public void send(byte[] payload) {
-        if (outputStream != null){
-            if (payload == null || payload.length == 0) {
-                Log.d(TAG, "send(): invalid payload");
-                return ;
-            }
-            JsonObject jsonObj = new JsonObject();
-            try {
-                String str = new String(payload,"iso8859-1");
-                Log.d(TAG, "send(): writing "+str);
-                jsonObj.addProperty("command", str);
-                try {
-                    outputStream.write(jsonObj.toString().getBytes());
-                    outputStream.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (outputStream != null){
+                    if (payload == null || payload.length == 0) {
+                        Log.d(TAG, "send(): invalid payload");
+                        return ;
+                    }
+                    JsonObject jsonObj = new JsonObject();
+                    try {
+                        String str = new String(payload,"iso8859-1");
+                        Log.d(TAG, "send(): writing "+str);
+                        jsonObj.addProperty("command", str);
+                        try {
+                            outputStream.write(jsonObj.toString().getBytes());
+                            outputStream.flush();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
             }
-        }
+        });
+
+        thread.run();
+
     }
 }

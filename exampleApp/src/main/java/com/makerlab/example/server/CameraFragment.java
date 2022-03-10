@@ -1,10 +1,14 @@
 package com.makerlab.example.server;
 
+import static android.content.Context.POWER_SERVICE;
 import static android.content.Context.WIFI_SERVICE;
 
+import android.content.Context;
 import android.hardware.Camera;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +17,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.android.libcam.R;
@@ -38,6 +43,8 @@ public class CameraFragment extends Fragment {
     private String mIP;
     private int mPort = 8888;
 
+    PowerManager.WakeLock wakeLock;
+
     public CameraFragment() {
         // Required empty public constructor
     }
@@ -46,12 +53,17 @@ public class CameraFragment extends Fragment {
         return new CameraFragment();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 //        return inflater.inflate(R.layout.fragment_camera, container, false);
         View inflatedView = inflater.inflate(R.layout.fragment_camera, container, false);
+
+        PowerManager pm = (PowerManager) getActivity().getApplicationContext().getSystemService(POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "myapp:camwakelock");
+
         mButton = (Button) inflatedView.findViewById(R.id.button_start);
         mButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -63,6 +75,8 @@ public class CameraFragment extends Fragment {
 
                             mIsOn = false;
                             mButton.setText("Stop");
+
+                            wakeLock.acquire();
                         } else {
                             closeSocketServer();
                             reset();
@@ -139,6 +153,7 @@ public class CameraFragment extends Fragment {
             e.printStackTrace();
         }
         mThread = null;
+        wakeLock.release();
     }
 
     @Override
