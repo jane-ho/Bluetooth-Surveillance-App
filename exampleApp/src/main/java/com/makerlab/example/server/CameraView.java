@@ -26,7 +26,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     // Camera configuration values
     public static final int PREVIEW_WIDTH = 720;
     public static final int PREVIEW_HEIGHT = 1280;
-    public static final int SCREEN_ORIENTATION = 90;
+    public int SCREEN_ORIENTATION = 90;
     // Preview display parameters (by portrait mode)
     private Camera.Size mPreviewSize = null;
     //
@@ -97,9 +97,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         // set preview size and make any resize, rotate or
         // reformatting changes here
 
+//        if (orientation > -1)
+//            SCREEN_ORIENTATION = orientation;
+
         // start preview with new settings
         try {
             mCamera.setPreviewCallback(mPreviewCallback);
+//            mCamera.setDisplayOrientation(SCREEN_ORIENTATION);
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
 
@@ -152,8 +156,14 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         return mPreviewSize.height;
     }
 
+    public int getPreviewOrientation() { return SCREEN_ORIENTATION; }
+
     public void setCamera(Camera camera) {
         mCamera = camera;
+    }
+
+    public void rotateCamera(int orientation) {
+        this.surfaceChanged(mHolder, orientation, PREVIEW_WIDTH, PREVIEW_HEIGHT);
     }
 
     public byte[] getImageBuffer() {

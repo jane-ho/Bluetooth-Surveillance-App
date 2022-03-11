@@ -18,6 +18,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
+import org.json.JSONException;
+
 public class SocketClient extends Thread {
     private DataListener mDataListener;
     private BufferManager mBufferManager;
@@ -86,9 +88,12 @@ public class SocketClient extends Thread {
                         int width = element.getAsInt();
                         element = obj.get("height");
                         int height = element.getAsInt();
+                        int orientation = 0;
+                        element = obj.get("orientation");
+                        orientation = element.getAsInt();
 
                         imageBuff = new byte[length];
-                        mBufferManager = new BufferManager(length, width, height);
+                        mBufferManager = new BufferManager(length, width, height, orientation);
                         mBufferManager.setOnDataListener(mDataListener);
                         break;
                     }
@@ -110,7 +115,29 @@ public class SocketClient extends Thread {
                 // read image data
                 Log.d(TAG, "run: reading image");
                 while ((len = inputStream.read(imageBuff)) != -1) {
-                    mBufferManager.fillBuffer(imageBuff, len);
+//                    // if setting e.g. orientation had changed
+//                    boolean isJSON = true;
+//                    JsonElement element = null;
+//                    try {
+//                        element = new JsonParser().parse(new String(imageBuff, 0, len));
+//                    } catch (JsonParseException e) {
+//                        System.out.println("exception: " + e);
+//                        isJSON = false;
+//                    }
+//                    if (isJSON && element != null) {
+//                        String data;
+//                        try {
+//                            data = element.getAsJsonObject().get("type").getAsString();
+//                            if (data.equals("data"))
+//                                restartConnection();
+//                        } catch (Exception e){
+//                            e.printStackTrace();
+//                            mBufferManager.fillBuffer(imageBuff,len);
+//                        }
+//                    }
+//                    else {
+                        mBufferManager.fillBuffer(imageBuff, len);
+//                    }
                 }
             }
 
@@ -154,6 +181,11 @@ public class SocketClient extends Thread {
 
     public void setOnDataListener(DataListener listener) {
         mDataListener = listener;
+    }
+
+    private void restartConnection(){
+        new SocketClient(mIP,mPort);
+        this.interrupt();
     }
 
     @Override

@@ -210,6 +210,8 @@ public class SocketServer extends Thread {
                     jsonObj.addProperty("length", mCameraPreview.getPreviewLength());
                     jsonObj.addProperty("width", mCameraPreview.getPreviewWidth());
                     jsonObj.addProperty("height", mCameraPreview.getPreviewHeight());
+                    int orientation = mCameraPreview.getPreviewOrientation();
+                    jsonObj.addProperty("orientation", orientation);
 
                     byte[] buff = new byte[256];
                     int len = 0;
@@ -236,6 +238,7 @@ public class SocketServer extends Thread {
                             element = obj.get("state");
                             if (element != null && element.getAsString().equals("ok")) {
                                 // send data
+//                                while (mCameraPreview.getPreviewOrientation() == orientation) {
                                 while (true) {
                                     outputStream.write(mCameraPreview.getImageBuffer());
                                     outputStream.flush();

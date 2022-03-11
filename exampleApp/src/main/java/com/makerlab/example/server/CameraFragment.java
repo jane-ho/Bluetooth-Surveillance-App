@@ -1,16 +1,24 @@
 package com.makerlab.example.server;
 
 import static android.content.Context.POWER_SERVICE;
+import static android.content.Context.SENSOR_SERVICE;
 import static android.content.Context.WIFI_SERVICE;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -32,6 +40,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class CameraFragment extends Fragment {
+    private static final String TAG = "CameraFragment";
     private static final int MY_CAMERA_PERMISSION_CODE = 1000;
     private Camera mCamera;
     private CameraView mPreview;
@@ -61,6 +70,7 @@ public class CameraFragment extends Fragment {
 //        return inflater.inflate(R.layout.fragment_camera, container, false);
         View inflatedView = inflater.inflate(R.layout.fragment_camera, container, false);
 
+        // WakeLock
         PowerManager pm = (PowerManager) getActivity().getApplicationContext().getSystemService(POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "myapp:camwakelock");
 
@@ -94,6 +104,27 @@ public class CameraFragment extends Fragment {
         mPreview = new CameraView(getContext(), mCameraManager.getCamera());
         FrameLayout container_preview = (FrameLayout) inflatedView.findViewById(R.id.container_preview);
         container_preview.addView(mPreview);
+
+//        // detect screen rotation
+//        SensorEventListener m_sensorEventListener = new SensorEventListener() {
+//            @Override
+//            public void onSensorChanged(SensorEvent event) {
+//                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                    // Portrait
+//                    mPreview.rotateCamera(90);
+//                    Log.d(TAG, "onSensorChanged: rotate camera 90");
+//                }
+//                else {
+//                    // Landscape
+//                    mPreview.rotateCamera(0);
+//                    Log.d(TAG, "onSensorChanged: rotate camera 0");
+//                }
+//            }
+//            @Override
+//            public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+//        };
+//        SensorManager sm = (SensorManager) getActivity().getApplicationContext().getSystemService(SENSOR_SERVICE);
+//        sm.registerListener(m_sensorEventListener, sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_NORMAL);
 
         return inflatedView;
     }
@@ -172,5 +203,7 @@ public class CameraFragment extends Fragment {
         mCameraManager.onPause();              // release the camera immediately on pause event
         reset();
     }
+
+
 
 }

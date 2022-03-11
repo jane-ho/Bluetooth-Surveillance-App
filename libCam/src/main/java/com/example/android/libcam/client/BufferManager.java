@@ -3,6 +3,7 @@ package com.example.android.libcam.client;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 
@@ -18,13 +19,14 @@ public class BufferManager extends Thread {
     private final int mFrameLength;
     private int mRemained = 0;
     private static final int MAX_BUFFER_COUNT = 2;
-    private int mWidth, mHeight;
+    private int mWidth, mHeight, mOrientation;
     private LinkedList<byte[]> mYUVQueue = new LinkedList<byte[]>();
     private DataListener mListener;
 
-    public BufferManager(int frameLength, int width, int height) {
+    public BufferManager(int frameLength, int width, int height, int orientation) {
         mWidth = width;
         mHeight = height;
+        mOrientation = orientation;
         mFrameLength = frameLength;
         mBufferQueue = new ImageBuffer[MAX_BUFFER_COUNT];
         for (int i = 0; i < MAX_BUFFER_COUNT; ++i) {
@@ -94,7 +96,12 @@ public class BufferManager extends Thread {
                     YuvImage yuvImage = new YuvImage(data, ImageFormat.NV21, mWidth, mHeight, null);
                     yuvImage.compressToJpeg(new Rect(0, 0, mWidth, mHeight), 50, out);
                     byte[] imageBytes = out.toByteArray();
+//                    Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(mOrientation);
                     Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                    image =  Bitmap.createBitmap(image, 0 , 0, image.getWidth(), image.getHeight(), matrix, true);
+
 //                    long t = System.currentTimeMillis();
 //                    Bitmap bufferedImage = null;
 //                    int[] rgbArray = Utils.convertYUVtoRGB(data, mWidth, mHeight);
