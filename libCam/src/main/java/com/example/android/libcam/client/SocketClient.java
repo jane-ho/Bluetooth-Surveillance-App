@@ -33,15 +33,17 @@ public class SocketClient extends Thread {
     ByteArrayOutputStream byteArray = null;
 
     public SocketClient(String ip, int port) {
+        if (ip.equals("") || port == 0) {
+            Log.d(TAG, "SocketClient: missing ip info");
+            return;
+        }
         mIP = ip;
         mPort = port;
-        if (mIP == null) {
-            Log.d(TAG, "SocketClient: no ip info is provided.");
-        }
     }
 
     public SocketClient() {
         Log.d(TAG, "SocketClient: no ip is provided");
+        return;
     }
 
     @Override

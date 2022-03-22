@@ -11,10 +11,5 @@
 
     <uses-feature android:name="android.hardware.camera" />
 
-    <application>
-        <activity
-            android:name="com.makerlab.example.server.CameraPreviewActivity"
-            android:label="Camera Preview"></activity>
-    </application>
 
 </manifest>

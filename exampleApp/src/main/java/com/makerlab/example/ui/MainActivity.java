@@ -104,11 +104,8 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         if (item.getItemId() == R.id.action_switch){
-            SharedPreferences.Editor preferencesEditor = mSharedPref.edit();
-            preferencesEditor.putString("mode", "client");
-            preferencesEditor.apply();
-            Intent intent = new Intent(this, MonitorActivity.class);
-            startActivity(intent);
+            startMonitorActivity();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -259,12 +256,24 @@ public class MainActivity extends AppCompatActivity implements
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
         }
         else {
-            CameraFragment cameraFragment = CameraFragment.newInstance();
+            CameraFragment cameraFragment = new CameraFragment(true);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.layout_cam, cameraFragment,"CAMERA FRAGMENT").commit();
         }
+    }
 
-
+    private void displayCamFragmentOnly() {
+        if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+        }
+        else {
+            CameraFragment cameraFragment = new CameraFragment(false);
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.layout_cam, cameraFragment,"CAMERA FRAGMENT");
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag("Front Fragment");
+            fragmentTransaction.remove(fragment);
+            fragmentTransaction.commit();
+        }
     }
 
     private void closeControlFragment() {
@@ -297,6 +306,31 @@ public class MainActivity extends AppCompatActivity implements
         // show the main activity layout containing static fragment
 //        View view = findViewById(R.id.layout_main);
 //        view.setVisibility(View.VISIBLE);
+    }
+
+    public void startMonitorActivity() {
+        SharedPreferences.Editor preferencesEditor = mSharedPref.edit();
+        preferencesEditor.putString("mode", "client");
+        preferencesEditor.apply();
+        Intent intent = new Intent(this, MonitorActivity.class);
+        startActivity(intent);
+    }
+
+    public void startBluetoothScan(String tag) {
+        if (tag.equals(MainFragmentFrontPage.class.getSimpleName())){
+            if (mBluetoothConnect.isConnected()) {
+                mBluetoothConnect.disconnectBluetooth();
+            }
+            Intent intent = new Intent(this, BluetoothDevListActivity.class);
+            startActivityForResult(intent, REQUEST_BT_GET_DEVICE);
+        }
+    }
+
+    public void startWithoutBLE(String tag) {
+        if (tag.equals(MainFragmentFrontPage.class.getSimpleName())) {
+            Toast.makeText(this, "Starting IP CAM without sentry...", Toast.LENGTH_SHORT).show();
+            displayCamFragmentOnly();
+        }
     }
 
     /** Post-process for granted permissions */

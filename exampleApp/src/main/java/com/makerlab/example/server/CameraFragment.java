@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -54,12 +55,18 @@ public class CameraFragment extends Fragment {
 
     PowerManager.WakeLock wakeLock;
 
+    private ImageButton button_switch;
+    private boolean isFrontCamera = false;
+    private boolean withControl;
+
     public CameraFragment() {
         // Required empty public constructor
+        this.withControl = true;
     }
 
-    public static CameraFragment newInstance() {
-        return new CameraFragment();
+    public CameraFragment(boolean withControl) {
+        // Required empty public constructor
+        this.withControl = withControl;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -81,7 +88,7 @@ public class CameraFragment extends Fragment {
                     public void onClick(View v) {
                         // get an image from the camera
                         if (mIsOn) {
-                            mThread = new SocketServer(mPreview, mPort, CameraFragment.this);
+                            mThread = new SocketServer(mPreview, mPort, CameraFragment.this, withControl);
 
                             mIsOn = false;
                             mButton.setText("Stop");
@@ -101,9 +108,27 @@ public class CameraFragment extends Fragment {
 
         mCameraManager = new CameraManager(getContext());
         // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraView(getContext(), mCameraManager.getCamera());
+        mPreview = new CameraView(getContext(), mCameraManager.getCamera(isFrontCamera));
         FrameLayout container_preview = (FrameLayout) inflatedView.findViewById(R.id.container_preview);
         container_preview.addView(mPreview);
+
+        // switch camera
+        button_switch = inflatedView.findViewById(R.id.button_switchcam);
+        button_switch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPreview.onPause();
+                mCameraManager.onPause();
+                isFrontCamera = !isFrontCamera;
+                Camera newCamera = mCameraManager.getCamera(isFrontCamera);
+                int[] size = mCameraManager.getPreviewSize();
+                mCameraManager.onResume();
+                mPreview.setCamera(newCamera);
+                mPreview.onResume();
+            }
+        });
+        if (mPreview != null)
+            button_switch.setVisibility(View.VISIBLE);
 
 //        // detect screen rotation
 //        SensorEventListener m_sensorEventListener = new SensorEventListener() {
@@ -171,6 +196,7 @@ public class CameraFragment extends Fragment {
     private void reset() {
         mButton.setText("Start");
         mIsOn = true;
+        isFrontCamera = false;
     }
 
     private void closeSocketServer() {
@@ -191,7 +217,7 @@ public class CameraFragment extends Fragment {
     public void onStart() {
         super.onStart();
         mCameraManager.onResume();
-        mPreview.setCamera(mCameraManager.getCamera());
+        mPreview.setCamera(mCameraManager.getCamera(false));
         mPreview.onResume();
     }
 

@@ -9,7 +9,7 @@
         android:id="@+id/container_preview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/textview_ip"
+        app:layout_constraintBottom_toTopOf="@+id/button_switchcam"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,7 +23,8 @@
         android:layout_marginStart="16dp"
         android:text="IP address: "
         app:layout_constraintBottom_toTopOf="@id/button_start"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_switchcam" />
 
     <TextView
         android:id="@+id/textview_info"
@@ -43,5 +44,14 @@
         app:layout_constraintTop_toBottomOf="@+id/textview_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/button_switchcam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/textview_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_always_landscape_portrait" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

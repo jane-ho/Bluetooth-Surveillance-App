@@ -30,6 +30,8 @@ public class SocketServer extends Thread {
     private int mPort;
     private Fragment fragment;
 
+    private boolean withControl;
+
     BufferedInputStream inputStream = null;
     BufferedOutputStream outputStream = null;
     Socket mSocket = null;
@@ -37,19 +39,14 @@ public class SocketServer extends Thread {
 
     private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-    public SocketServer(CameraView preview, Fragment fragment) {
-        mCameraPreview = preview;
-        mPort = 8888;
-        this.fragment = fragment;
-        start();
-    }
-
-    public SocketServer(CameraView preview, int port, Fragment fragment) {
+    public SocketServer(CameraView preview, int port, Fragment fragment, boolean withControl) {
         mCameraPreview = preview;
         mPort = port;
         this.fragment = fragment;
+        this.withControl = withControl;
         start();
     }
+
 
     @Override
     public void run() {
@@ -67,8 +64,8 @@ public class SocketServer extends Thread {
                 mSocket = mServer.accept();
                 System.out.println("new socket");
                 executorService.submit(new ClientHandler(mSocket, mCameraPreview));
-                executorService.submit(new Reader(mSocket, fragment));
-
+                if (withControl)
+                    executorService.submit(new Reader(mSocket, fragment));
 //                outputStream = new BufferedOutputStream(mSocket.getOutputStream());
 //                inputStream = new BufferedInputStream(mSocket.getInputStream());
 //

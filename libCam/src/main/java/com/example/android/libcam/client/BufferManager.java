@@ -101,6 +101,7 @@ public class BufferManager extends Thread {
                     matrix.postRotate(mOrientation);
                     Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
                     image =  Bitmap.createBitmap(image, 0 , 0, image.getWidth(), image.getHeight(), matrix, true);
+//                    image.compress(Bitmap.CompressFormat.JPEG, 50, out); //?
 
 //                    long t = System.currentTimeMillis();
 //                    Bitmap bufferedImage = null;

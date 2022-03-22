@@ -15,7 +15,15 @@ public class CameraManager {
     }
 
 
-    public Camera getCamera() {
+    public Camera getCamera(boolean isFront) {
+        if (isFront) {
+            releaseCamera();
+            mCamera = getFrontCameraInstance();
+        }
+        else {
+            releaseCamera();
+            mCamera = getCameraInstance();
+        }
         return mCamera;
     }
 
@@ -39,6 +47,10 @@ public class CameraManager {
                 ", " + mCamera.getParameters().getPreviewSize().height, Toast.LENGTH_LONG).show();
     }
 
+    public int[] getPreviewSize(){
+        return new int[]{mCamera.getParameters().getPreviewSize().width, mCamera.getParameters().getPreviewSize().height};
+    }
+
     /** A safe way to get an instance of the Camera object. */
     private static Camera getCameraInstance(){
         Camera c = null;
@@ -49,6 +61,28 @@ public class CameraManager {
             // Camera is not available (in use or does not exist)
         }
         return c; // returns null if camera is unavailable
+    }
+
+    private Camera getFrontCameraInstance(){
+        int cameraCount = 0;
+        Camera cam = null;
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        cameraCount = Camera.getNumberOfCameras();
+        for ( int camIdx = 0; camIdx < cameraCount; camIdx++ ) {
+            Camera.getCameraInfo( camIdx, cameraInfo );
+            if ( cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT  ) {
+                try {
+                    cam = Camera.open( camIdx );
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    break;
+                }
+            }
+        }
+
+        return cam;
     }
 
 }
