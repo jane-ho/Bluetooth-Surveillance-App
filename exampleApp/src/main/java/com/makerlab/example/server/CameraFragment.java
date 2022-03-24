@@ -88,12 +88,13 @@ public class CameraFragment extends Fragment {
                     public void onClick(View v) {
                         // get an image from the camera
                         if (mIsOn) {
-                            mThread = new SocketServer(mPreview, mPort, CameraFragment.this, withControl);
-
+                            mThread = new SocketServer(mPreview, mPort, CameraFragment.this, withControl, isFrontCamera);
+                            Log.d(TAG, "started a server thread");
                             mIsOn = false;
                             mButton.setText("Stop");
 
                             wakeLock.acquire();
+                            button_switch.setEnabled(false);
                         } else {
                             closeSocketServer();
                             reset();
@@ -108,6 +109,7 @@ public class CameraFragment extends Fragment {
 
         mCameraManager = new CameraManager(getContext());
         // Create our Preview view and set it as the content of our activity.
+        isFrontCamera = false;
         mPreview = new CameraView(getContext(), mCameraManager.getCamera(isFrontCamera));
         FrameLayout container_preview = (FrameLayout) inflatedView.findViewById(R.id.container_preview);
         container_preview.addView(mPreview);
@@ -120,10 +122,8 @@ public class CameraFragment extends Fragment {
                 mPreview.onPause();
                 mCameraManager.onPause();
                 isFrontCamera = !isFrontCamera;
-                Camera newCamera = mCameraManager.getCamera(isFrontCamera);
-                int[] size = mCameraManager.getPreviewSize();
+                mPreview.setCamera(mCameraManager.getCamera(isFrontCamera));
                 mCameraManager.onResume();
-                mPreview.setCamera(newCamera);
                 mPreview.onResume();
             }
         });
@@ -196,7 +196,7 @@ public class CameraFragment extends Fragment {
     private void reset() {
         mButton.setText("Start");
         mIsOn = true;
-        isFrontCamera = false;
+        button_switch.setEnabled(true);
     }
 
     private void closeSocketServer() {
@@ -206,6 +206,7 @@ public class CameraFragment extends Fragment {
         mThread.interrupt();
         try {
             mThread.join();
+            Log.d(TAG, "ended a server thread");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -216,8 +217,9 @@ public class CameraFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mCameraManager.onResume();
         mPreview.setCamera(mCameraManager.getCamera(false));
+        mCameraManager.onResume();
+        isFrontCamera =false;
         mPreview.onResume();
     }
 

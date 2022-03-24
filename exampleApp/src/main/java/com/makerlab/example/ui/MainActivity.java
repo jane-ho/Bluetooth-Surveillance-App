@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements
     private SharedPreferences mSharedPref;
     private String mSharedPrefFile = "com.makerlab.omni.sharedprefs";
     //
+    Thread mOnBTConnectSuccessThread;
+    CameraFragment cameraFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements
         if (D)
             Log.e(LOG_TAG, "onConnectionSuccess() - connected");
 
-        runOnUiThread(new Thread() {
+        mOnBTConnectSuccessThread = new Thread() {
             public void run() {
                 // ask for remembering bluetooth device or not
                 String bleDeviceAddr = mSharedPref.getString(BLUETOOT_REMOTE_DEVICE, null);
@@ -194,7 +196,8 @@ public class MainActivity extends AppCompatActivity implements
                 displayControlFragment();
                 displayCamFragment();
             }
-        });
+        };
+        runOnUiThread(mOnBTConnectSuccessThread);
     }
 
     @Override
@@ -256,23 +259,37 @@ public class MainActivity extends AppCompatActivity implements
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
         }
         else {
-            CameraFragment cameraFragment = new CameraFragment(true);
+            cameraFragment = new CameraFragment(true);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.layout_cam, cameraFragment,"CAMERA FRAGMENT").commit();
         }
     }
 
     private void displayCamFragmentOnly() {
+        if (mBluetoothConnect!=null && mBluetoothConnect.isConnected())
+            mBluetoothConnect.disconnectBluetooth();
+        if (mOnBTConnectSuccessThread!=null && mOnBTConnectSuccessThread.isAlive())
+            mOnBTConnectSuccessThread.interrupt();
+
         if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
         }
         else {
-            CameraFragment cameraFragment = new CameraFragment(false);
+            if (cameraFragment != null) {
+                cameraFragment.onStop();
+                cameraFragment.onDestroy();
+            }
+            cameraFragment = new CameraFragment(false);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.layout_cam, cameraFragment,"CAMERA FRAGMENT");
             Fragment fragment = getSupportFragmentManager().findFragmentByTag("Front Fragment");
             fragmentTransaction.remove(fragment);
             fragmentTransaction.commit();
+
+            MenuItem menuItem = mMenuSetting.findItem(R.id.action_bluetooth_scan);
+            menuItem.setVisible(false);
+            menuItem = mMenuSetting.findItem(R.id.action_bluetooth_disconnect);
+            menuItem.setVisible(false);
         }
     }
 

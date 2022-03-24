@@ -2,6 +2,7 @@ package com.makerlab.example.server;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.util.Log;
 import android.widget.Toast;
 
 public class CameraManager {
@@ -11,18 +12,17 @@ public class CameraManager {
 
     public CameraManager(Context context) {     // TODO: check camera permission
         mContext = context;
-        mCamera = getCameraInstance();
+//        mCamera = getCameraInstance();
     }
 
 
     public Camera getCamera(boolean isFront) {
-        if (isFront) {
+        if (mCamera!=null)
             releaseCamera();
-            mCamera = getFrontCameraInstance();
-        }
-        else {
-            releaseCamera();
-            mCamera = getCameraInstance();
+        try {
+            mCamera = Camera.open(isFront? 1:0);
+        } catch (RuntimeException e){
+            e.printStackTrace();
         }
         return mCamera;
     }
@@ -40,11 +40,11 @@ public class CameraManager {
 
     public void onResume() {
         if (mCamera == null) {
-            mCamera = getCameraInstance();
+            mCamera = getCamera(false);
         }
 
-        Toast.makeText(mContext, "preview size = " + mCamera.getParameters().getPreviewSize().width +
-                ", " + mCamera.getParameters().getPreviewSize().height, Toast.LENGTH_LONG).show();
+//        Toast.makeText(mContext, "preview size = " + mCamera.getParameters().getPreviewSize().width +
+//                ", " + mCamera.getParameters().getPreviewSize().height, Toast.LENGTH_LONG).show();
     }
 
     public int[] getPreviewSize(){
@@ -73,16 +73,15 @@ public class CameraManager {
             if ( cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT  ) {
                 try {
                     cam = Camera.open( camIdx );
+                    break;
                 } catch (RuntimeException e) {
                     e.printStackTrace();
-                }
-                finally {
-                    break;
                 }
             }
         }
 
         return cam;
     }
+
 
 }

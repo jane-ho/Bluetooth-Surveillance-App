@@ -11,6 +11,7 @@
         <item name="android:windowBackground">@color/activityBackground</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:itemBackground">@color/colorPrimary</item>
+        <item name="imageButtonStyle">@style/MyImageButtonTheme</item>
     </style>
 
     <style name="MyButtonTheme" parent="Widget.AppCompat.Button.Colored">
@@ -18,6 +19,10 @@
         <item name="colorButtonNormal">@color/colorAccent</item>
         <item name="android:colorButtonNormal">@color/colorAccent</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="MyImageButtonTheme" parent="Widget.AppCompat.ImageButton">
+        <item name="backgroundTint">@color/white</item>
     </style>
 
 </resources>

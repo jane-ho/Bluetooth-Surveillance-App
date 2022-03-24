@@ -132,6 +132,8 @@ public class MonitorFragment extends Fragment implements DataListener {
         reset();
     }
 
+
+
     @Override
     public void onConnect() {
         iv_monitor.post(new Runnable() {

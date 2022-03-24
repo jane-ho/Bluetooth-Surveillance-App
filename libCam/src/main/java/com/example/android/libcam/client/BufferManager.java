@@ -74,6 +74,7 @@ public class BufferManager extends Thread {
 
     public void close() {
         mListener.onDisconnect();
+        mYUVQueue.clear();
         interrupt();
         try {
             join();

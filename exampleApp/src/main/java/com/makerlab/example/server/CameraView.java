@@ -2,9 +2,11 @@ package com.makerlab.example.server;
 
 import android.content.Context;
 import android.graphics.ImageFormat;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.hardware.camera2.CameraAccessException;
 import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -75,7 +77,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void surfaceDestroyed(SurfaceHolder holder) {
         // empty. Take care of releasing the Camera preview in your activity.
-        mCamera.release();
+//        mCamera.release();
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -107,7 +109,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         // start preview with new settings
         try {
             mCamera.setPreviewCallback(mPreviewCallback);
-//            mCamera.setDisplayOrientation(SCREEN_ORIENTATION);
+            Camera.Parameters params = mCamera.getParameters();
+            params.setPreviewSize(640, 480); // set preview size. smaller is better
+            mCamera.setParameters(params);
+            mCamera.setDisplayOrientation(SCREEN_ORIENTATION);
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
 
@@ -164,11 +169,12 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void setCamera(Camera camera) {
         mCamera = camera;
+        surfaceChanged(mHolder, PixelFormat.RGB_888,mPreviewSize.width,mPreviewSize.height);
     }
 
-    public void rotateCamera(int orientation) {
-        this.surfaceChanged(mHolder, orientation, PREVIEW_WIDTH, PREVIEW_HEIGHT);
-    }
+//    public void rotateCamera(int orientation) {
+//        this.surfaceChanged(mHolder, orientation, PREVIEW_WIDTH, PREVIEW_HEIGHT);
+//    }
 
     public byte[] getImageBuffer() {
         synchronized (mQueue) {
@@ -190,8 +196,12 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void onPause() {
         if (mCamera != null) {
-            mCamera.setPreviewCallback(null);
-            mCamera.stopPreview();
+            try {
+                mCamera.setPreviewCallback(null);
+                mCamera.stopPreview();
+            } catch (RuntimeException e){
+                e.printStackTrace();
+            }
         }
         resetBuff();
     }

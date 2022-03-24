@@ -105,7 +105,7 @@ public class SocketClient extends Thread {
                 }
             }
 
-            mDataListener.onConnect();
+//            mDataListener.onConnect();
 
             if (imageBuff != null) {
                 Log.d(TAG, "run: writing ok");
@@ -114,6 +114,7 @@ public class SocketClient extends Thread {
                 outputStream.write(jsonObj.toString().getBytes());
                 outputStream.flush();
 
+                mDataListener.onConnect();
                 // read image data
                 Log.d(TAG, "run: reading image");
                 while ((len = inputStream.read(imageBuff)) != -1) {

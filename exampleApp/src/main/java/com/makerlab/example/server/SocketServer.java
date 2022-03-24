@@ -31,22 +31,23 @@ public class SocketServer extends Thread {
     private Fragment fragment;
 
     private boolean withControl;
+    private boolean isFront;
 
     BufferedInputStream inputStream = null;
     BufferedOutputStream outputStream = null;
     Socket mSocket = null;
     ByteArrayOutputStream byteArray = null;
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private ExecutorService executorService = Executors.newFixedThreadPool(20);
 
-    public SocketServer(CameraView preview, int port, Fragment fragment, boolean withControl) {
+    public SocketServer(CameraView preview, int port, Fragment fragment, boolean withControl, boolean isFront) {
         mCameraPreview = preview;
         mPort = port;
         this.fragment = fragment;
         this.withControl = withControl;
+        this.isFront = isFront;
         start();
     }
-
 
     @Override
     public void run() {
@@ -63,7 +64,7 @@ public class SocketServer extends Thread {
 
                 mSocket = mServer.accept();
                 System.out.println("new socket");
-                executorService.submit(new ClientHandler(mSocket, mCameraPreview));
+                executorService.submit(new ClientHandler(mSocket, mCameraPreview, isFront));
                 if (withControl)
                     executorService.submit(new Reader(mSocket, fragment));
 //                outputStream = new BufferedOutputStream(mSocket.getOutputStream());
@@ -184,10 +185,12 @@ public class SocketServer extends Thread {
     private class ClientHandler implements Runnable {
         Socket mSocket;
         private CameraView mCameraPreview;
+        private boolean isFront;
 
-        public ClientHandler(Socket socket, CameraView mCameraPreview) {
+        public ClientHandler(Socket socket, CameraView mCameraPreview, boolean isFront) {
             this.mSocket = socket;
             this.mCameraPreview = mCameraPreview;
+            this.isFront = isFront;
         }
 
         @Override
@@ -208,6 +211,7 @@ public class SocketServer extends Thread {
                     jsonObj.addProperty("width", mCameraPreview.getPreviewWidth());
                     jsonObj.addProperty("height", mCameraPreview.getPreviewHeight());
                     int orientation = mCameraPreview.getPreviewOrientation();
+                    orientation = isFront? 360-orientation : orientation;
                     jsonObj.addProperty("orientation", orientation);
 
                     byte[] buff = new byte[256];

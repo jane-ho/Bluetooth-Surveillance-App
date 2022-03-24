@@ -9,6 +9,7 @@
         android:id="@+id/container_preview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:foregroundGravity="center_horizontal"
         app:layout_constraintBottom_toTopOf="@+id/button_switchcam"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,9 +50,10 @@
         android:id="@+id/button_switchcam"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="15dp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/textview_info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_always_landscape_portrait" />
+        app:srcCompat="@drawable/ic_action_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
