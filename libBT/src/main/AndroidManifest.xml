@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.makerlab.ui" >
+    package="com.janeho.ui" >
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -10,7 +10,7 @@
     <application>
         <activity
             android:label="Scanning Bluetooth Devices"
-            android:name="BluetoothDevListActivity">
+            android:name="com.janeho.ui.BluetoothDevListActivity">
         </activity>
     </application>
 </manifest>
