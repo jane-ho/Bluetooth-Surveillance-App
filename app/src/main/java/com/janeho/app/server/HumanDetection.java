@@ -1,6 +1,5 @@
 package com.janeho.app.server;
 
-import android.graphics.Camera;
 import android.util.Log;
 
 import org.opencv.android.OpenCVLoader;
@@ -32,9 +31,6 @@ public class HumanDetection {
 
     public void detect(byte[] bArray,int h,int w) {
         if (hog != null) {
-
-//            Log.d(TAG, "detect: dectecting... ;"+h+";"+w);
-            
             // Create the OpenCV cv::Mat.
             Mat m1 = new Mat(h, w, CvType.CV_8UC4);
 
@@ -75,7 +71,6 @@ public class HumanDetection {
     private void alertPositive(){
         if (parent!=null){
             parent.onDetected();
-//            parent.draw(rects);
         }
     }
     private void undoPositive(){

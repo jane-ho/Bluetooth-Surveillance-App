@@ -70,58 +70,6 @@ public class SocketServer extends Thread {
                 executorService.submit(new ClientHandler(mSocket, mCameraPreview, isFront));
                 if (withControl)
                     executorService.submit(new Reader(mSocket, fragment));
-//                outputStream = new BufferedOutputStream(mSocket.getOutputStream());
-//                inputStream = new BufferedInputStream(mSocket.getInputStream());
-//
-//                JsonObject jsonObj = new JsonObject();
-//                jsonObj.addProperty("type", "data");
-//                jsonObj.addProperty("length", mCameraPreview.getPreviewLength());
-//                jsonObj.addProperty("width", mCameraPreview.getPreviewWidth());
-//                jsonObj.addProperty("height", mCameraPreview.getPreviewHeight());
-//
-//                byte[] buff = new byte[256];
-//                int len = 0;
-//                String msg = null;
-//                outputStream.write(jsonObj.toString().getBytes());
-//                outputStream.flush();
-//
-//                while ((len = inputStream.read(buff)) != -1) {
-//                    msg = new String(buff, 0, len);
-//
-//                    // JSON analysis
-//                    JsonParser parser = new JsonParser();
-//                    boolean isJSON = true;
-//                    JsonElement element = null;
-//                    try {
-//                        element =  parser.parse(msg);
-//                    }
-//                    catch (JsonParseException e) {
-//                        Log.e(TAG, "exception: " + e);
-//                        isJSON = false;
-//                    }
-//                    if (isJSON && element != null) {
-//                        JsonObject obj = element.getAsJsonObject();
-//                        element = obj.get("state");
-//                        if (element != null && element.getAsString().equals("ok")) {
-//                            // send data
-//                            while (true) {
-//                                outputStream.write(mCameraPreview.getImageBuffer());
-//                                outputStream.flush();
-//
-//                                if (Thread.currentThread().isInterrupted())
-//                                    break;
-//                            }
-//
-//                            break;
-//                        }
-//                    }
-//                    else {
-//                        break;
-//                    }
-//                }
-//
-//                outputStream.close();
-//                inputStream.close();
             }
 
         } catch (IOException e) {
@@ -248,15 +196,8 @@ public class SocketServer extends Thread {
                             element = obj.get("state");
                             if (element != null && element.getAsString().equals("ok")) {
                                 // send data
-//                                while (mCameraPreview.getPreviewOrientation() == orientation) {
-
-//                                // HOG OpenCV
-//                                HumanDetection hd = new HumanDetection();
                                 while (true) {
-                                    // HOG OpenCV
                                     byte[] imgbuff = mCameraPreview.getImageBuffer();
-//                                    hd.detect(imgbuff,mCameraPreview.getPreviewHeight(),mCameraPreview.getPreviewWidth());
-
                                     outputStream.write(imgbuff);
                                     outputStream.flush();
                                     if (Thread.currentThread().isInterrupted())
@@ -377,48 +318,4 @@ public class SocketServer extends Thread {
         }
     }
 
-    // OpenCV
-    private class BroadcastSender extends Thread {
-        String msg;
-
-        public BroadcastSender (String msg){
-            this.msg = msg;
-        }
-
-        @Override
-        public void run() {
-            super.run();
-            if (mSocketList.size() > 0 ){
-                for (int i=0; i<mSocketList.size();i++){
-                    Log.d(TAG, "send broadcast: warning"+i);
-                    Socket mSocket = mSocketList.get(i);
-                    try {
-                        OutputStream outputStream = new BufferedOutputStream(mSocket.getOutputStream());
-//                        JsonObject jsonObj = new JsonObject();
-//                        jsonObj.addProperty("warning", msg);
-//                        outputStream.write(jsonObj.toString().getBytes());
-//                        byte[] dst = new byte[256];
-//                        String foo = "!warning!";
-//                        byte[] src = foo.getBytes();
-////                        dst[0] = src.length;
-//                        System.arraycopy(src, 0, dst, 0, src.length);
-//                        outputStream.flush();
-                        outputStream.write("!warning!".getBytes());
-                        outputStream.flush();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (Thread.currentThread().isInterrupted())
-                        break;
-                }
-            } else {
-                return;
-            }
-        }
-    }
-    public void sendBroadcast(String msg) {
-        Thread mThread = new BroadcastSender(msg);
-        mThread.run();
-    }
 }

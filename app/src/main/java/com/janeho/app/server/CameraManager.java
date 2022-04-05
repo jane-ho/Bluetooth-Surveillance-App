@@ -8,9 +8,8 @@ public class CameraManager {
     private Context mContext;
 
 
-    public CameraManager(Context context) {     // TODO: check camera permission
+    public CameraManager(Context context) {
         mContext = context;
-//        mCamera = getCameraInstance();
     }
 
 
@@ -44,42 +43,5 @@ public class CameraManager {
 //        Toast.makeText(mContext, "preview size = " + mCamera.getParameters().getPreviewSize().width +
 //                ", " + mCamera.getParameters().getPreviewSize().height, Toast.LENGTH_LONG).show();
     }
-
-    public int[] getPreviewSize(){
-        return new int[]{mCamera.getParameters().getPreviewSize().width, mCamera.getParameters().getPreviewSize().height};
-    }
-
-    /** A safe way to get an instance of the Camera object. */
-    private static Camera getCameraInstance(){
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
-        }
-        return c; // returns null if camera is unavailable
-    }
-
-    private Camera getFrontCameraInstance(){
-        int cameraCount = 0;
-        Camera cam = null;
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-        cameraCount = Camera.getNumberOfCameras();
-        for ( int camIdx = 0; camIdx < cameraCount; camIdx++ ) {
-            Camera.getCameraInfo( camIdx, cameraInfo );
-            if ( cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT  ) {
-                try {
-                    cam = Camera.open( camIdx );
-                    break;
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return cam;
-    }
-
 
 }

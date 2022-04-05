@@ -75,7 +75,6 @@ public class CameraFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_camera, container, false);
         View inflatedView = inflater.inflate(R.layout.fragment_camera, container, false);
 
         // WakeLock
@@ -87,14 +86,14 @@ public class CameraFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // get an image from the camera
+                        // start server thread
                         if (mIsOn) {
                             mThread = new SocketServer(mPreview, mPort, CameraFragment.this, withControl, isFrontCamera);
                             Log.d(TAG, "started a server thread");
                             mIsOn = false;
                             mButton.setText("Stop");
 
-                            wakeLock.acquire();
+                            wakeLock.acquire();     // acquire wake lock
                             button_switch.setEnabled(false);
 
                             // OpenCV
@@ -111,11 +110,14 @@ public class CameraFragment extends Fragment {
                     }
                 }
         );
+
+        // display ip info
         TextView textview_info = inflatedView.findViewById(R.id.textview_info);
         WifiManager wm = (WifiManager) getContext().getApplicationContext().getSystemService(WIFI_SERVICE);
         mIP = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         textview_info.setText(mIP+":"+Integer.toString(mPort));
 
+        // open camera
         mCameraManager = new CameraManager(getContext());
         // Create our Preview view and set it as the content of our activity.
         isFrontCamera = false;
@@ -139,27 +141,6 @@ public class CameraFragment extends Fragment {
         if (mPreview != null)
             button_switch.setVisibility(View.VISIBLE);
 
-//        // detect screen rotation
-//        SensorEventListener m_sensorEventListener = new SensorEventListener() {
-//            @Override
-//            public void onSensorChanged(SensorEvent event) {
-//                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-//                    // Portrait
-//                    mPreview.rotateCamera(90);
-//                    Log.d(TAG, "onSensorChanged: rotate camera 90");
-//                }
-//                else {
-//                    // Landscape
-//                    mPreview.rotateCamera(0);
-//                    Log.d(TAG, "onSensorChanged: rotate camera 0");
-//                }
-//            }
-//            @Override
-//            public void onAccuracyChanged(Sensor sensor, int accuracy) {}
-//        };
-//        SensorManager sm = (SensorManager) getActivity().getApplicationContext().getSystemService(SENSOR_SERVICE);
-//        sm.registerListener(m_sensorEventListener, sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_NORMAL);
-
         // OpenCV
         alertLayout = inflatedView.findViewById(R.id.alertLayout);
         switch_hd = inflatedView.findViewById(R.id.switch_hd);
@@ -167,44 +148,6 @@ public class CameraFragment extends Fragment {
         return inflatedView;
     }
 
-    private void showPublicIPAddress(TextView textview){
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try  {
-                    try{
-                        String urlstr = "https://api.ipify.org/?format=json";
-                        URL url = new URL(urlstr);
-                        URLConnection request = url.openConnection();
-                        request.connect();
-                        JsonParser jp = new JsonParser(); //from gson
-                        JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
-                        JsonObject obj = root.getAsJsonObject();
-                        JsonElement element = obj.get("ip");
-                        mIP = element.getAsString();
-                    } catch (IOException e) {
-                        WifiManager wm = (WifiManager) getContext().getApplicationContext().getSystemService(WIFI_SERVICE);
-                        mIP = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-                    } finally {
-                        textview.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                textview.setText(mIP+":"+Integer.toString(mPort));
-                            }
-                        });
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.start();
-    }
-
-    public void releaseCamera(){
-//        mCamera.release();
-//        mCameraManager.onPause();
-    }
 
     private void reset() {
         mButton.setText("Start");
@@ -252,25 +195,19 @@ public class CameraFragment extends Fragment {
         reset();
         // OpenCV
         if (mHumanDetector!=null) {
-//            try {
-//                mHumanDetector.onPause();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
             mHumanDetector.interrupt();
         }
     }
 
     // OpenCV
     public void onDetected(){
-        Log.d(TAG, "onDetected: ");
+//        Log.d(TAG, "onDetected: ");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 try {
                     alertLayout.setVisibility(View.VISIBLE);
                     Toast.makeText(getContext(), "Suspicious!", Toast.LENGTH_SHORT).show();
-//                    mThread.sendBroadcast("Suspicious!");
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -280,7 +217,7 @@ public class CameraFragment extends Fragment {
     // OpenCV
     public void onUndoDetected(){
         if (alertLayout.getVisibility() == View.VISIBLE) {
-            Log.d(TAG, "onUndoDetected: ");
+//            Log.d(TAG, "onUndoDetected: ");
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
