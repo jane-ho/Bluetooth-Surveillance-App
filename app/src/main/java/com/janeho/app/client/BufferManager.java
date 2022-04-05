@@ -94,22 +94,11 @@ public class BufferManager extends Thread {
                     YuvImage yuvImage = new YuvImage(data, ImageFormat.NV21, mWidth, mHeight, null);
                     yuvImage.compressToJpeg(new Rect(0, 0, mWidth, mHeight), 50, out);
                     byte[] imageBytes = out.toByteArray();
-//                    Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+
                     Matrix matrix = new Matrix();
                     matrix.postRotate(mOrientation);
                     Bitmap image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
                     image =  Bitmap.createBitmap(image, 0 , 0, image.getWidth(), image.getHeight(), matrix, true);
-//                    image.compress(Bitmap.CompressFormat.JPEG, 50, out); //?
-
-//                    long t = System.currentTimeMillis();
-//                    Bitmap bufferedImage = null;
-//                    int[] rgbArray = Utils.convertYUVtoRGB(data, mWidth, mHeight);
-//                    bufferedImage = new BufferedImage(mWidth, mHeight, BufferedImage.TYPE_USHORT_565_RGB);
-//                    bufferedImage.setRGB(0, 0, mWidth, mHeight, rgbArray, 0, mWidth);
-
-//                    bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
-//                    bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(data));
-
 
                     mListener.onDirty(image);
 //                    System.out.println("time cost = " + (System.currentTimeMillis() - t));

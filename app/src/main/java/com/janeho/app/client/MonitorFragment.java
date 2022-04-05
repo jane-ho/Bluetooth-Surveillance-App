@@ -44,9 +44,6 @@ public class MonitorFragment extends Fragment implements DataListener {
         View inflatedView = inflater.inflate(R.layout.fragment_monitor, container, false);
         iv_monitor = inflatedView.findViewById(R.id.imageView_monitor);
 
-//        EditText et_ip = inflatedView.findViewById(R.id.editText_ip);
-//        et_ip.setText("192.168.1.38");
-
         mButton = inflatedView.findViewById(R.id.button_connect);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,19 +73,13 @@ public class MonitorFragment extends Fragment implements DataListener {
             if (mQueue.size() ==  MAX_BUFFER) {
                 mLastFrame = mQueue.poll();
             }
-            if (mQueue.size() > 0) {    //
-                mLastFrame = mQueue.poll();    //
-            }       //
+            if (mQueue.size() > 0) {
+                mLastFrame = mQueue.poll();
+            }
             mQueue.add(bufferedImage);
         }
 
-//        synchronized (mQueue) {
-//            if (mQueue.size() > 0) {
-//                mLastFrame = mQueue.poll();
-//            }
-//        }
         if (mLastFrame != null) {
-//            iv_monitor.setImageBitmap(mLastFrame);
             iv_monitor.post(new Runnable() {
                 @Override
                 public void run() {
@@ -97,7 +88,6 @@ public class MonitorFragment extends Fragment implements DataListener {
             });
         }
         else if (mImage != null) {
-//            iv_monitor.setImageBitmap(mImage);
             iv_monitor.post(new Runnable() {
                 @Override
                 public void run() {
@@ -107,15 +97,7 @@ public class MonitorFragment extends Fragment implements DataListener {
         }
     }
 
-//    @Override
-//    public Dimension getPreferredSize() {
-//        if (mImage == null) {
-//            return new Dimension(960,720); // init window size
-//        } else {
-//            return new Dimension(mImage.getWidth(null), mImage.getHeight(null));
-//        }
 
-//    }
     @Override
     public void onDirty(Bitmap bufferedImage) {
         updateUI(bufferedImage);
@@ -123,12 +105,6 @@ public class MonitorFragment extends Fragment implements DataListener {
 
     @Override
     public void onDisconnect() {
-//        getActivity().runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Toast.makeText(getContext(), "Connection Failed", Toast.LENGTH_SHORT).show();
-//            }
-//        });
         closeSocketClient();
         reset();
     }
@@ -187,7 +163,6 @@ public class MonitorFragment extends Fragment implements DataListener {
     public void onStop() {
         super.onStop();
         closeSocketClient();
-//        reset();
     }
 
     private void hideMonitor() {

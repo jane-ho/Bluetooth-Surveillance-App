@@ -44,10 +44,6 @@ public class SocketClient extends Thread {
     public void run() {
         super.run();
 
-//        BufferedInputStream inputStream = null;
-//        BufferedOutputStream outputStream = null;
-//        Socket socket = null;
-//        ByteArrayOutputStream byteArray = null;
         try {
             socket = new Socket();
             Log.d(TAG, "run: connecting to server");
@@ -99,8 +95,6 @@ public class SocketClient extends Thread {
                 }
             }
 
-//            mDataListener.onConnect();
-
             if (imageBuff != null) {
                 Log.d(TAG, "run: writing ok");
                 JsonObject jsonObj = new JsonObject();
@@ -112,44 +106,7 @@ public class SocketClient extends Thread {
                 // read image data
                 Log.d(TAG, "run: reading image");
                 while ((len = inputStream.read(imageBuff)) != -1) {
-//                    // if setting e.g. orientation had changed
-//                    boolean isJSON = true;
-//                    JsonElement element = null;
-//                    try {
-//                        element = new JsonParser().parse(new String(imageBuff, 0, len));
-//                    } catch (Exception e) {
-////                        System.out.println("JsonParseException: " + e);
-//                        isJSON = false;
-//                    }
-//                    if (isJSON && (element != null)) {
-//                        String data;
-//                        try {
-////                            data = element.getAsJsonObject().get("type").getAsString();
-////                            if (data.equals("data"))
-////                                restartConnection();
-//                        } catch (Exception e){
-////                            e.printStackTrace();
-//                            mBufferManager.fillBuffer(imageBuff,len);
-//                        }
-//                    }
-
                         mBufferManager.fillBuffer(imageBuff, len);
-
-//                    // OpenCV
-//                    String str = new String(imageBuff, 0, len);
-//                    String target = "!warning!";
-//                    if (str.indexOf(target) > -1){
-////                        data = element.getAsJsonObject().get("warning").getAsString();
-////                        str = str.substring(index, index+target.length()); // remove msg from image bytes
-////                        Log.d(TAG, "str: "+str);
-//                        str = str.replaceAll(target,""); // remove msg from image bytes
-//                        byte[] bytes = str.getBytes();
-//                        mBufferManager.fillBuffer(bytes, bytes.length);
-//                        Log.d(TAG, "SocketClient:received warning: "+target);
-//                    }
-//                    else {
-//                        mBufferManager.fillBuffer(imageBuff, len);
-//                    }
                 }
             }
 
@@ -195,10 +152,6 @@ public class SocketClient extends Thread {
         mDataListener = listener;
     }
 
-    private void restartConnection(){
-        new SocketClient(mIP,mPort);
-        this.interrupt();
-    }
 
     @Override
     public void interrupt() {

@@ -61,18 +61,8 @@ public class MonitorControl extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        //view.setEnabled(false);
-        int buttonClicked = -1;
-        for (int i = 1; i < buttionID.length; i++) {
-            if (view.getId() == buttionID[i]) {
-                buttonClicked = i;
-                break;
-            }
-        }
-        //view.setEnabled(true);
+        view.setEnabled(false);
         synchronized (mQueue) {
-//            mQueue.add(mPlainTextProtocol.getPayload(buttonClicked));
-//            mQueue.add(mPlainTextProtocol.getPayload(0));
             byte[] payload = new byte[0];
             Button b = (Button) view;
             try {
@@ -82,6 +72,7 @@ public class MonitorControl extends Fragment implements View.OnClickListener {
                 e.printStackTrace();
             }
         }
+        view.setEnabled(true);
     }
 
     @Override
