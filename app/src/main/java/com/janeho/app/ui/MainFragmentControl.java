@@ -85,7 +85,7 @@ public class MainFragmentControl extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        //view.setEnabled(false);
+        view.setEnabled(false);
         int buttonClicked = -1;
         for (int i = 1; i < buttionID.length; i++) {
             if (view.getId() == buttionID[i]) {
@@ -93,7 +93,7 @@ public class MainFragmentControl extends Fragment implements View.OnClickListene
                 break;
             }
         }
-        //view.setEnabled(true);
+        view.setEnabled(true);
         synchronized (mQueue) {
             mQueue.add(mPlainTextProtocol.getPayload(buttonClicked));
             mQueue.add(mPlainTextProtocol.getPayload(0));

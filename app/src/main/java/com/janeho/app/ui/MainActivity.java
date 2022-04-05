@@ -243,18 +243,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private void displayControlFragment() {
         MainFragmentControl mainFragmentControl = MainFragmentControl.newInstance();
-        // hide the main activity layout containing static fragment
-//        final View view = findViewById(R.id.layout_main);
-//        view.setVisibility(View.INVISIBLE);
-        //
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.layout_main, mainFragmentControl).commit();
 
     }
     private void displayCamFragment() {
-        // hide the main activity layout containing static fragment
-//        final View view = findViewById(R.id.layout_main);
-//        view.setVisibility(View.INVISIBLE);
         if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
         }
@@ -298,16 +291,12 @@ public class MainActivity extends AppCompatActivity implements
         if (mainFragmentControl != null) {
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
-//            fragmentTransaction.remove(mainFragmentControl).commit();
             fragmentTransaction.replace(R.id.layout_main, MainFragmentFrontPage.newInstance()).commit();
         }
         if (D)
             Log.e(LOG_TAG, "closeControlFragment() :");
-
-        // show the main activity layout containing static fragment
-//        View view = findViewById(R.id.layout_main);
-//        view.setVisibility(View.VISIBLE);
     }
+
     private void closeCamFragment() {
         CameraFragment cameraFragment = (CameraFragment) getSupportFragmentManager().findFragmentByTag("CAMERA FRAGMENT");
         if (cameraFragment != null) {
@@ -319,10 +308,6 @@ public class MainActivity extends AppCompatActivity implements
         }
         if (D)
             Log.e(LOG_TAG, "closeCamFragment() :");
-
-        // show the main activity layout containing static fragment
-//        View view = findViewById(R.id.layout_main);
-//        view.setVisibility(View.VISIBLE);
     }
 
     public void startMonitorActivity() {

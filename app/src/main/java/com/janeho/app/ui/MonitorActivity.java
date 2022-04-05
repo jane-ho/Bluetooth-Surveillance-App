@@ -45,8 +45,6 @@ public class MonitorActivity extends AppCompatActivity {
             SharedPreferences.Editor preferencesEditor = mSharedPref.edit();
             preferencesEditor.putString("mode", "server");
             preferencesEditor.apply();
-//            Intent intent = new Intent(this, MainActivity.class);
-//            startActivity(intent);
             finish();
         }
         return super.onOptionsItemSelected(item);
