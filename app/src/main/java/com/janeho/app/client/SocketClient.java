@@ -1,4 +1,4 @@
-package com.janeho.client;
+package com.janeho.app.client;
 import android.util.Log;
 
 import java.io.BufferedInputStream;

@@ -1,4 +1,4 @@
-package com.janeho.client;
+package com.janeho.app.client;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -13,7 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.janeho.libcam.R;
+
+import com.janeho.app.ui.R;
 
 import java.util.LinkedList;
 

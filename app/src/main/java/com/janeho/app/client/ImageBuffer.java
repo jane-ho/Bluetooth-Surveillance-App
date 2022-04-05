@@ -1,4 +1,4 @@
-package com.janeho.client;
+package com.janeho.app.client;
 
 import java.io.ByteArrayOutputStream;
 import java.util.LinkedList;

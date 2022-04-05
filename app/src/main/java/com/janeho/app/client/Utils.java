@@ -1,4 +1,4 @@
-package com.janeho.client;
+package com.janeho.app.client;
 
 public class Utils {
 

@@ -14,7 +14,6 @@
             <option value="$PROJECT_DIR$/OpenCVlib" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/libBT" />
-            <option value="$PROJECT_DIR$/libCam" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

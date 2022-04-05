@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.janeho.client.MonitorFragment;
+import com.janeho.app.client.MonitorFragment;
 
 public class MonitorActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.janeho.client;
+package com.janeho.app.client;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,7 +9,8 @@ import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 
-import com.janeho.libcam.R;
+
+import com.janeho.app.ui.R;
 
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
