@@ -15,8 +15,10 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,6 +39,8 @@ public class SocketServer extends Thread {
     ByteArrayOutputStream byteArray = null;
 
     private ExecutorService executorService = Executors.newFixedThreadPool(20);
+    // OpenCV
+    private ArrayList<Socket> mSocketList = new ArrayList<Socket>();
 
     public SocketServer(CameraView preview, int port, Fragment fragment, boolean withControl, boolean isFront) {
         mCameraPreview = preview;
@@ -61,6 +65,7 @@ public class SocketServer extends Thread {
                     byteArray = new ByteArrayOutputStream();
 
                 mSocket = mServer.accept();
+                mSocketList.add(mSocket);      // OpenCV
                 System.out.println("new socket");
                 executorService.submit(new ClientHandler(mSocket, mCameraPreview, isFront));
                 if (withControl)
@@ -143,6 +148,9 @@ public class SocketServer extends Thread {
                     byteArray.close();
                 }
 
+                if (mSocketList.size() > 0)     // OpenCV
+                    mSocketList.clear();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -175,6 +183,9 @@ public class SocketServer extends Thread {
             if (byteArray != null) {
                 byteArray.close();
             }
+            if (mSocketList.size() > 0)     // OpenCV
+                mSocketList.clear();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -238,10 +249,16 @@ public class SocketServer extends Thread {
                             if (element != null && element.getAsString().equals("ok")) {
                                 // send data
 //                                while (mCameraPreview.getPreviewOrientation() == orientation) {
-                                while (true) {
-                                    outputStream.write(mCameraPreview.getImageBuffer());
-                                    outputStream.flush();
 
+//                                // HOG OpenCV
+//                                HumanDetection hd = new HumanDetection();
+                                while (true) {
+                                    // HOG OpenCV
+                                    byte[] imgbuff = mCameraPreview.getImageBuffer();
+//                                    hd.detect(imgbuff,mCameraPreview.getPreviewHeight(),mCameraPreview.getPreviewWidth());
+
+                                    outputStream.write(imgbuff);
+                                    outputStream.flush();
                                     if (Thread.currentThread().isInterrupted())
                                         break;
                                 }
@@ -358,5 +375,50 @@ public class SocketServer extends Thread {
 
             }
         }
+    }
+
+    // OpenCV
+    private class BroadcastSender extends Thread {
+        String msg;
+
+        public BroadcastSender (String msg){
+            this.msg = msg;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            if (mSocketList.size() > 0 ){
+                for (int i=0; i<mSocketList.size();i++){
+                    Log.d(TAG, "send broadcast: warning"+i);
+                    Socket mSocket = mSocketList.get(i);
+                    try {
+                        OutputStream outputStream = new BufferedOutputStream(mSocket.getOutputStream());
+//                        JsonObject jsonObj = new JsonObject();
+//                        jsonObj.addProperty("warning", msg);
+//                        outputStream.write(jsonObj.toString().getBytes());
+//                        byte[] dst = new byte[256];
+//                        String foo = "!warning!";
+//                        byte[] src = foo.getBytes();
+////                        dst[0] = src.length;
+//                        System.arraycopy(src, 0, dst, 0, src.length);
+//                        outputStream.flush();
+                        outputStream.write("!warning!".getBytes());
+                        outputStream.flush();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (Thread.currentThread().isInterrupted())
+                        break;
+                }
+            } else {
+                return;
+            }
+        }
+    }
+    public void sendBroadcast(String msg) {
+        Thread mThread = new BroadcastSender(msg);
+        mThread.run();
     }
 }

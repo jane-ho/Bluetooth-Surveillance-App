@@ -2,3 +2,4 @@ include ':app'
 include ':libBT'
 //rootProject.name = "BluetootControlExample"
 include ':libCam'
+include ':OpenCVlib'

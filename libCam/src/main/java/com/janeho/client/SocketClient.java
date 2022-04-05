@@ -117,23 +117,38 @@ public class SocketClient extends Thread {
 //                    JsonElement element = null;
 //                    try {
 //                        element = new JsonParser().parse(new String(imageBuff, 0, len));
-//                    } catch (JsonParseException e) {
-//                        System.out.println("exception: " + e);
+//                    } catch (Exception e) {
+////                        System.out.println("JsonParseException: " + e);
 //                        isJSON = false;
 //                    }
-//                    if (isJSON && element != null) {
+//                    if (isJSON && (element != null)) {
 //                        String data;
 //                        try {
-//                            data = element.getAsJsonObject().get("type").getAsString();
-//                            if (data.equals("data"))
-//                                restartConnection();
+////                            data = element.getAsJsonObject().get("type").getAsString();
+////                            if (data.equals("data"))
+////                                restartConnection();
 //                        } catch (Exception e){
-//                            e.printStackTrace();
+////                            e.printStackTrace();
 //                            mBufferManager.fillBuffer(imageBuff,len);
 //                        }
 //                    }
-//                    else {
+
                         mBufferManager.fillBuffer(imageBuff, len);
+
+//                    // OpenCV
+//                    String str = new String(imageBuff, 0, len);
+//                    String target = "!warning!";
+//                    if (str.indexOf(target) > -1){
+////                        data = element.getAsJsonObject().get("warning").getAsString();
+////                        str = str.substring(index, index+target.length()); // remove msg from image bytes
+////                        Log.d(TAG, "str: "+str);
+//                        str = str.replaceAll(target,""); // remove msg from image bytes
+//                        byte[] bytes = str.getBytes();
+//                        mBufferManager.fillBuffer(bytes, bytes.length);
+//                        Log.d(TAG, "SocketClient:received warning: "+target);
+//                    }
+//                    else {
+//                        mBufferManager.fillBuffer(imageBuff, len);
 //                    }
                 }
             }

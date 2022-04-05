@@ -181,7 +181,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                 mLastFrame = mQueue.poll();
             }
         }
-
         return mLastFrame;
     }
 
