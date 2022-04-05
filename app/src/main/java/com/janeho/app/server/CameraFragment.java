@@ -7,6 +7,8 @@ import android.hardware.Camera;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -16,12 +18,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
-import com.janeho.libcam.R;
+import com.janeho.app.ui.R;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -50,6 +55,10 @@ public class CameraFragment extends Fragment {
     private ImageButton button_switch;
     private boolean isFrontCamera = false;
     private boolean withControl;
+
+    private HumanDetector mHumanDetector;   // OpenCV
+    public LinearLayout alertLayout;
+    private Switch switch_hd;
 
     public CameraFragment() {
         // Required empty public constructor
@@ -87,6 +96,14 @@ public class CameraFragment extends Fragment {
 
                             wakeLock.acquire();
                             button_switch.setEnabled(false);
+
+                            // OpenCV
+                            if (switch_hd.isChecked()) {
+                                mHumanDetector = new HumanDetector(mPreview, CameraFragment.this);
+                                mHumanDetector.start();
+                            }
+                            switch_hd.setEnabled(false);
+
                         } else {
                             closeSocketServer();
                             reset();
@@ -143,6 +160,10 @@ public class CameraFragment extends Fragment {
 //        SensorManager sm = (SensorManager) getActivity().getApplicationContext().getSystemService(SENSOR_SERVICE);
 //        sm.registerListener(m_sensorEventListener, sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_NORMAL);
 
+        // OpenCV
+        alertLayout = inflatedView.findViewById(R.id.alertLayout);
+        switch_hd = inflatedView.findViewById(R.id.switch_hd);
+
         return inflatedView;
     }
 
@@ -189,6 +210,13 @@ public class CameraFragment extends Fragment {
         mButton.setText("Start");
         mIsOn = true;
         button_switch.setEnabled(true);
+        if (mHumanDetector != null){
+            mHumanDetector.interrupt();
+        }
+        // OpenCV
+        alertLayout.setVisibility(View.INVISIBLE);
+        switch_hd.setEnabled(true);
+
     }
 
     private void closeSocketServer() {
@@ -222,8 +250,44 @@ public class CameraFragment extends Fragment {
         mPreview.onPause();
         mCameraManager.onPause();              // release the camera immediately on pause event
         reset();
+        // OpenCV
+        if (mHumanDetector!=null) {
+//            try {
+//                mHumanDetector.onPause();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            mHumanDetector.interrupt();
+        }
     }
 
-
+    // OpenCV
+    public void onDetected(){
+        Log.d(TAG, "onDetected: ");
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    alertLayout.setVisibility(View.VISIBLE);
+                    Toast.makeText(getContext(), "Suspicious!", Toast.LENGTH_SHORT).show();
+//                    mThread.sendBroadcast("Suspicious!");
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    // OpenCV
+    public void onUndoDetected(){
+        if (alertLayout.getVisibility() == View.VISIBLE) {
+            Log.d(TAG, "onUndoDetected: ");
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    alertLayout.setVisibility(View.INVISIBLE);
+                }
+            });
+        }
+    }
 
 }

@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:nestedScrollingEnabled="true"
     android:isScrollContainer="true"
+    android:nestedScrollingEnabled="true"
     android:overScrollMode="always">
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -21,7 +21,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,9 +34,9 @@
             <fragment
                 android:id="@+id/fragment_main_front_page"
                 android:name="com.janeho.app.ui.MainFragmentFrontPage"
-                android:tag="Front Fragment"
                 android:layout_width="264dp"
                 android:layout_height="wrap_content"
+                android:tag="Front Fragment"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

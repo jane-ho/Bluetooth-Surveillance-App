@@ -10,11 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foregroundGravity="center_horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/button_switchcam"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
     </FrameLayout>
 
     <TextView
@@ -22,10 +20,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="IP address: "
-        app:layout_constraintBottom_toTopOf="@id/button_start"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_switchcam" />
+        app:layout_constraintTop_toBottomOf="@id/container_preview"/>
 
     <TextView
         android:id="@+id/textview_info"
@@ -42,18 +40,58 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="start"
-        app:layout_constraintTop_toBottomOf="@+id/textview_info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_switchcam" />
 
     <ImageButton
         android:id="@+id/button_switchcam"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="SwitchCamera"
         android:padding="15dp"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/textview_info"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_info"
         app:srcCompat="@drawable/ic_action_name" />
+
+    <LinearLayout
+        android:id="@+id/alertLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:gravity="center|center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/button_start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_start"
+        app:layout_constraintTop_toTopOf="@+id/button_start">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            app:srcCompat="@android:drawable/ic_menu_info_details" />
+
+        <TextView
+            android:id="@+id/textView_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Suspicious Events" />
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/switch_hd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="Human Detection"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/button_switchcam"
+        app:layout_constraintStart_toStartOf="@+id/textview_ip"
+        app:layout_constraintTop_toTopOf="@+id/button_switchcam" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

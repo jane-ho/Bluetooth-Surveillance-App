@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.janeho.libcam.R;
+import com.janeho.app.ui.R;
 
 
 /**
