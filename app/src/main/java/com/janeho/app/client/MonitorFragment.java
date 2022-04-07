@@ -1,11 +1,18 @@
 package com.janeho.app.client;
 
+import android.bluetooth.BluetoothDevice;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +21,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 
+import com.janeho.app.ui.MainActivity;
 import com.janeho.app.ui.R;
+import com.janeho.bt.BluetoothScan;
 
 import java.util.LinkedList;
 
@@ -30,6 +39,11 @@ public class MonitorFragment extends Fragment implements DataListener {
     private SocketClient mThread;
     private Button mButton;
 
+    private SharedPreferences mSharedPref;
+    private String mSharedPrefFile = "com.ipcam.sharedprefs";
+    static public final String SERVER_IP_ADDRESS = "server_ip_addr";
+    static public final String SERVER_PORT_NO = "server_port_no";
+
     public MonitorFragment() {
         // Required empty public constructor
     }
@@ -44,6 +58,17 @@ public class MonitorFragment extends Fragment implements DataListener {
         View inflatedView = inflater.inflate(R.layout.fragment_monitor, container, false);
         iv_monitor = inflatedView.findViewById(R.id.imageView_monitor);
 
+        mSharedPref = getContext().getSharedPreferences(mSharedPrefFile, Context.MODE_PRIVATE);
+        String saved_ip = mSharedPref.getString(SERVER_IP_ADDRESS, null);
+        int saved_port = mSharedPref.getInt(SERVER_PORT_NO, 0);
+        if (saved_ip!=null && saved_port != 0) {
+            //Log.e(LOG_TAG, "onCreate(): found share perference");
+            EditText et_ip = inflatedView.findViewById(R.id.editText_ip);
+            EditText et_port = inflatedView.findViewById(R.id.editText_port);
+            et_ip.setText(saved_ip);
+            et_port.setText(String.valueOf(saved_port));
+        }
+
         mButton = inflatedView.findViewById(R.id.button_connect);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +79,9 @@ public class MonitorFragment extends Fragment implements DataListener {
                     mThread = new SocketClient(et_ip.getText().toString(), Integer.valueOf(et_port.getText().toString()));  // TODO: input validation
                     mThread.setOnDataListener(MonitorFragment.this);
                     mThread.start();
+
+                    // SharedPreferences
+                    rememberIP(et_ip.getText().toString(),Integer.valueOf(et_port.getText().toString()));
 
                     mIsOn = false;
                     mButton.setText("Disconnect");
@@ -188,5 +216,40 @@ public class MonitorFragment extends Fragment implements DataListener {
 
     public SocketClient getSocket(){
         return mThread;
+    }
+
+    private void rememberIP(String ip, int port){
+        if (ip!=null && port != 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Remember this IP address?");
+            builder.setMessage("Remember this IP address?");
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // add to SharedPreferences
+                    SharedPreferences.Editor preferencesEditor = mSharedPref.edit();
+                    preferencesEditor.putString(SERVER_IP_ADDRESS, ip);
+                    preferencesEditor.putInt(SERVER_PORT_NO, port);
+                    preferencesEditor.apply();
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Do nothing
+                    SharedPreferences.Editor preferencesEditor = mSharedPref.edit();
+                    preferencesEditor.remove(SERVER_IP_ADDRESS);
+                    preferencesEditor.remove(SERVER_PORT_NO);
+                    preferencesEditor.apply();
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+            Button btn_p = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+            Button btn_n = alert.getButton(DialogInterface.BUTTON_NEGATIVE);
+            btn_p.setTextColor(Color.BLACK);
+            btn_n.setTextColor(Color.BLACK);
+        }
     }
 }
